@@ -34,6 +34,7 @@
             width: 100%;
             cursor: default;
             background-color: var(--background);
+            overflow-x: hidden;
         }
 
         html::-webkit-scrollbar {
@@ -98,7 +99,7 @@
             color: var(--background);
             position: absolute;
             display: block;
-            left: -100%;
+            left: -50%;
             transform: translateX(-50%);
             transition: left 0.4s ease, opacity 0.4s ease;
             line-height: 20px;
@@ -211,12 +212,13 @@
 
         .nohero {
             width: 100%;
-            height: 100vh;
+            min-height: 100vh;
             /* background-color: white; */
             border-top: 1px solid var(--color);
             z-index: 0;
             position: relative;
             padding: 75px;
+            overflow-x: hidden;
         }
 
         .header {
@@ -262,7 +264,7 @@
 
         .name h1 {
             position: relative;
-            font-size: 64pt;
+            font-size: clamp(24pt, 10vw, 64pt);
             margin: 0;
             font-weight: 900;
             color: var(--color);
@@ -304,7 +306,8 @@
         }
 
         .footer {
-            height: 200px;
+            max-height: 200px;
+            min-height: unset;
             display: flex;
             align-items: center;
         }
@@ -318,18 +321,18 @@
         }
 
         .grid {
-            width: max-content;
             width: 100%;
             height: 100%;
             display: flex;
             gap: 25px;
-            padding: 35px 0 75px 0;
+            margin-top: 35px;
             justify-content: space-between;
+            flex-wrap: wrap;
         }
 
         .card {
-            width: 250px;
-            height: 100%;
+            min-width: 250px;
+            min-height: 400px;
             border: 1px solid gray;
             flex: 1;
             color: white;
@@ -347,7 +350,8 @@
         }
 
         .card-loc {
-            color: gray;
+            color: white;
+            opacity: 0.5;
             font-size: 12pt;
             margin: auto;
         }
@@ -383,13 +387,151 @@
             top: 0;
             right: 50%;
             color: transparent;
-            transition: right 0.5s ease, width 0.5s ease, color 0.5s ease;
+            transition: right 0.3s ease, width 0.3s ease, color 0.3s ease;
         }
 
         .card-link:hover::after {
             right: 0;
             width: 100%;
             color: white;
+        }
+
+        @media screen and (max-width: 450px) {
+            .nohero {
+                padding: 15px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: calc(100% - 15px);
+            }
+
+            .header {
+                margin: 0;
+                margin-top: 50px;
+            }
+        }
+
+        .about-content {
+            width: 100%;
+            margin-top: 50px;
+            display: flex;
+            gap: 50px;
+        }
+
+        .about-text {
+            color: white;
+            flex: 1;
+        }
+
+        #card-about {
+            color: white;
+            flex: 1;
+        }
+
+        .about-text h1 {
+            margin-top: 0;
+        }
+
+        .about-text p {
+            opacity: 0.5;
+            margin: 0;
+        }
+
+        .carousel-wrapper {
+            position: absolute;
+            left: 0;
+            right: 0;
+            margin-top: 35px;
+        }
+
+        .carousel {
+            display: flex;
+            gap: 25px;
+            justify-content: space-between;
+            flex-wrap: nowrap;
+            overflow-x: scroll;
+            scroll-snap-type: x mandatory;
+            padding: 0 75px;
+            scroll-behavior: smooth;
+        }
+
+        .carousel::-webkit-scrollbar {
+            display: none;
+        }
+
+        .carousel-scroll {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            width: 75px;
+            text-align: center;
+            line-height: 400px;
+            font-size: 16pt;
+            z-index: 1;
+            color: white;
+        }
+
+        .carousel-scroll-left {
+            left: 0;
+            background-image: linear-gradient(to left, transparent, #000000aa);
+        }
+
+        .carousel-scroll-right {
+            right: 0;
+            background-image: linear-gradient(to right, transparent, #000000aa);
+        }
+
+        .project-card {
+            background-position: center center;
+            background-size: 50%;
+            background-repeat: no-repeat;
+            clip-path: inset(0);
+            max-width: 80%;
+            min-width: 80%;
+            scroll-snap-align: center;
+        }
+
+        .project-card .card-video {
+            position: absolute;
+            /* left: 50%;
+            top: 50%; */
+            /* transform: translate(-50%, -50%);
+            aspect-ratio: 16 / 9; */
+            opacity: 0.8;
+            z-index: -2;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            /* margin: -25px; */
+            padding: 0;
+        }
+
+        .project-card .gradient {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(to bottom,
+                    #000000ee 0%,
+                    transparent 40%,
+                    transparent 60%,
+                    #000000ee 100%);
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        .corner-label {
+            position: absolute;
+            right: 75px;
+            bottom: 50px;
+            color: black;
+            background-color: red;
+            font-size: 10pt;
+            padding: 2px 5px;
+            opacity: 0.5;
         }
     </style>
 </head>
@@ -407,7 +549,7 @@
             <a class="link" data-label="→">PROJECTS</a>
         </div>
     </div>
-    <div class="hero" style="--pos: 0">
+    <div class="hero" style="--pos: 0" id="hero">
         <canvas id="canvas"></canvas>
         <!-- <div class="label">
             <p>Physics + Data Science @ UC Berkeley</p>
@@ -422,10 +564,25 @@
         </div>
         <p class="description">COMPUTATIONAL PHYSICS</p>
     </div>
-    <div class="nohero" style="--pos: 1">
+    <div class="nohero" style="--pos: 1" id="about">
         <h1 class="header swap-text" data-label="ABOUT"><span>ABOUT</span></h1>
+        <div class="about-content">
+            <div class="about-text">
+                <h1>Hi there!</h1>
+                <p>I study Physics and Data Science at UC Berkeley. I currently do research in computational physics at
+                    the Lawrence Berkeley National Lab. I am primarily interested in physics research, especially in
+                    astrophysics and space sciences. I also do full-stack web development, and I am currently teaching
+                    CS-198: Full-Stack Web Development at UC Berkeley. I occasionally publish apps, games, and software
+                    for fun, and I also do freelance web development and client work in my spare time.
+                </p>
+            </div>
+            <div id="card-about">
+
+            </div>
+            <p class="corner-label">THREE-BODY PROBLEM: BUTTERFLY I</p>
+        </div>
     </div>
-    <div class="nohero" style="--pos: 2">
+    <div class="nohero" style="--pos: 2" id="research">
         <h1 class="header swap-text" data-label="RESEARCH"><span>RESEARCH</span></h1>
         <div class="grid">
             <div class="card" id="card-lanl">
@@ -463,8 +620,67 @@
             </div>
         </div>
     </div>
-    <div class="nohero" style="--pos: 3">
+    <div class="nohero" style="--pos: 3" id="projects">
         <h1 class="header swap-text" data-label="PROJECTS"><span>PROJECTS</span></h1>
+        <div class="carousel-wrapper">
+            <!-- <a class="carousel-scroll carousel-scroll-left">←</a>
+            <a class="carousel-scroll carousel-scroll-right">→</a> -->
+            <div class="carousel">
+                <div class="card project-card" onclick="this.parentNode.scrollTo({left: this.offsetLeft})">
+                    <div class="gradient"></div>
+                    <video class="card-video" src="https://underpig1.github.io/octos/img/octos-preview.mp4" autoplay
+                        playsinline muted loop></video>
+                    <div class="card-top">
+                        <h1 class="card-title">OCTOS DESKTOP</h1>
+                        <p class="card-loc">The open-source HTML dynamic desktop engine</p>
+                    </div>
+                    <div class="card-bottom">
+                        <p class="card-description">Create and share web-based interactive, animated wallpapers on
+                            Windows. Available on the Microsoft Store. Featured on Hackaday, ProductHunt, GitHub
+                            trending, and more.</p>
+                    </div><a class="card-link">→</a>
+                </div>
+                <div class="card project-card" onclick="this.parentNode.scrollTo({left: this.offsetLeft})">
+                    <div class="gradient"></div><img class="card-video" src="vocabulum.png" autoplay playsinline muted
+                        loop></img>
+                    <div class="card-top">
+                        <h1 class="card-title">VOCABULUM</h1>
+                        <p class="card-loc">The rapid-fire multiplayer word game with friends</p>
+                    </div>
+                    <div class="card-bottom">
+                        <p class="card-description">Create and share web-based interactive, animated wallpapers on
+                            Windows. Available on
+                            the Microsoft Store. Featured on Hackaday, ProductHunt, GitHub trending, and more.</p>
+                    </div><a class="card-link">→</a>
+                </div>
+                <div class="card project-card" onclick="this.parentNode.scrollTo({left: this.offsetLeft})">
+                    <div class="gradient"></div>
+                    <img class="card-video" src="harpy.png" autoplay playsinline muted loop></img>
+                    <div class="card-top">
+                        <h1 class="card-title">HARPY</h1>
+                        <p class="card-loc">The web-based 3D flight engine</p>
+                    </div>
+                    <div class="card-bottom">
+                        <p class="card-description">Create and share web-based interactive, animated wallpapers on
+                            Windows. Available on
+                            the Microsoft Store. Featured on Hackaday, ProductHunt, GitHub trending, and more.</p>
+                    </div><a class="card-link">→</a>
+                </div>
+                <div class="card project-card" onclick="this.parentNode.scrollTo({left: this.offsetLeft})">
+                    <div class="gradient"></div>
+                    <img class="card-video" src="mandelbrot.png" autoplay playsinline muted loop></img>
+                    <div class="card-top">
+                        <h1 class="card-title">MANDELWEB</h1>
+                        <p class="card-loc">64-bit multi-threaded Mandelbrot fractal set viewer</p>
+                    </div>
+                    <div class="card-bottom">
+                        <p class="card-description">Create and share web-based interactive, animated wallpapers on
+                            Windows. Available on
+                            the Microsoft Store. Featured on Hackaday, ProductHunt, GitHub trending, and more.</p>
+                    </div><a class="card-link">→</a>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="nohero footer" style="--pos: 4">
         <div class="footer-left">
@@ -491,9 +707,10 @@
             let targetScrollTop = 0
             let scrollTop = 0
             let cursorPos = vec(0, 0)
-            let cardNames = ['lanl', 'lbnl', 'nso']
+            let cardNames = ['lanl', 'lbnl', 'nso', 'about']
             let cardPos = {};
             let cursorActive = false;
+            const isVisible = {};
 
             const f = 500;
             let stageR = 0;
@@ -514,7 +731,9 @@
 
                 const scrollX = window.scrollX || document.documentElement.scrollLeft;
                 const scrollY = window.scrollY || document.documentElement.scrollTop;
-                const getCenter = (rect) => vec(-rect.left + width / 2 - rect.width / 2, -rect.top + rect.height / 2.5 - scrollY)
+                // y' = (y + scrollTop) * f / (z + stageZ)
+                // y'*stageZ/f-scrollTop
+                const getCenter = (rect) => vec(-rect.left + width / 2 - rect.width / 2, height / 2 - rect.top - rect.height / 2 - scrollY)
                 for (let name of cardNames) {
                     cardPos[name] = getCenter(document.getElementById('card-' + name).getBoundingClientRect());
                 }
@@ -548,7 +767,7 @@
                 document.querySelectorAll('.name, .swap-text').forEach(element => {
                     let pos = parseInt(getComputedStyle(element).getPropertyValue('--pos'));
                     // if (pos == null) return;
-                    let cond = scrollTop >= (pos - 0.5) * window.innerHeight// && scrollTop <= (pos + 0.5) * window.innerHeight;
+                    let cond = scrollTop >= (pos - 0.25) * window.innerHeight// && scrollTop <= (pos + 0.5) * window.innerHeight;
                     if (pos == 0) cond = scrollTop <= 20
                     if (cond)
                         element.classList.add('active')
@@ -556,6 +775,19 @@
                         element.classList.remove('active')
                 });
             }
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        console.log(`${entry.target.id} is now on screen`);
+                        isVisible[entry.target.id] = true
+                    } else {
+                        isVisible[entry.target.id] = false
+                    }
+                });
+            });
+            const sections = document.querySelectorAll('.hero, .nohero');
+            sections.forEach((section) => observer.observe(section));
+
             window.onscroll();
             setInterval(window.onscroll, 100);
             window.onresize();
@@ -617,7 +849,7 @@
                 let theta = 0;
                 let n = 1000;
                 let shiftY = 0;
-                let r = stageR / 1.5 - (Math.hypot(followMouse.x, followMouse.y) / stageR / 10) ** 2
+                let r = stageR / 1.5 - (Math.hypot(followMouse.x, followMouse.y) / stageR / 10) ** 2 - scrollTop/5
                 for (let i = 0; i < n; i++) {
                     let { x, y, z } = sphToCart(r, theta, phi)
                     theta += Math.PI / n
@@ -653,11 +885,108 @@
 
             function draw(t) {
                 ctx.clearRect(0, 0, width, height)
-                drawHero(t)
-                drawResearch(t)
+                if (isVisible['hero']) drawHero(t)
+                if (isVisible['research']) drawResearch(t)
+                if (isVisible['about']) drawAbout(t)
+            }
+
+            const G = 1.0;
+            const m = [1.0, 1.0, 1.0];
+            // const z0 = 0.152224534898;
+            // const vx = 0.445821334436;
+            // const vy = 0.160715316235;
+            // const vz = 0.312117562854; // cool with 0.01
+
+            // const z0 = 0.25387857578;
+            // const vx = 0.30855862740;
+            // const vy = 0.55506896654;
+            // const vz = 0.0034527925512; // d and b
+
+            const z0 = 0.153412;
+            const vx = 0.347111;
+            const vy = 0.532728;
+            const vz = 0.153412;
+
+            let state = {
+                pos: [[-1.0, 0, -z0 / 3], [1.0, 0, -z0 / 3], [0, 0, 2 * z0 / 3]],
+                vel: [[vx, vy, vz], [vx, vy, -vz], [-2 * vx, -2 * vy, 0]],
+                history: [[], [], []]
+            };
+
+            function getAcceleration(p) {
+                let acc = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+                const epsilon = 1e-9;
+                for (let i = 0; i < 3; i++) {
+                    for (let j = 0; j < 3; j++) {
+                        if (i === j) continue;
+                        let dx = p[j][0] - p[i][0], dy = p[j][1] - p[i][1], dz = p[j][2] - p[i][2];
+                        let distSq = dx * dx + dy * dy + dz * dz + epsilon;
+                        let f = G * m[j] / Math.pow(distSq, 1.5);
+                        acc[i][0] += dx * f; acc[i][1] += dy * f; acc[i][2] += dz * f;
+                    }
+                }
+                return acc;
+            }
+
+            function stepPhysics(dt) {
+                const s = state;
+                const n = 3;
+
+                const getDerivatives = (p, v) => {
+                    const a = getAcceleration(p);
+                    return { dp: v, dv: a };
+                };
+
+                const k1 = getDerivatives(s.pos, s.vel);
+                const p2 = s.pos.map((p, i) => p.map((val, axis) => val + k1.dp[i][axis] * dt * 0.5));
+                const v2 = s.vel.map((v, i) => v.map((val, axis) => val + k1.dv[i][axis] * dt * 0.5));
+                const k2 = getDerivatives(p2, v2);
+                const p3 = s.pos.map((p, i) => p.map((val, axis) => val + k2.dp[i][axis] * dt * 0.5));
+                const v3 = s.vel.map((v, i) => v.map((val, axis) => val + k2.dv[i][axis] * dt * 0.5));
+                const k3 = getDerivatives(p3, v3);
+                const p4 = s.pos.map((p, i) => p.map((val, axis) => val + k3.dp[i][axis] * dt));
+                const v4 = s.vel.map((v, i) => v.map((val, axis) => val + k3.dv[i][axis] * dt));
+                const k4 = getDerivatives(p4, v4);
+                for (let i = 0; i < n; i++) {
+                    for (let axis = 0; axis < 3; axis++) {
+                        s.pos[i][axis] += (dt / 6) * (k1.dp[i][axis] + 2 * k2.dp[i][axis] + 2 * k3.dp[i][axis] + k4.dp[i][axis]);
+                        s.vel[i][axis] += (dt / 6) * (k1.dv[i][axis] + 2 * k2.dv[i][axis] + 2 * k3.dv[i][axis] + k4.dv[i][axis]);
+                    }
+                    s.history[i].push([...s.pos[i]]);
+                    if (s.history[i].length > 500) s.history[i].shift();
+                }
+            }
+
+            function drawAbout(t) {
+                let aboutPos = cardPos['about']
+                // dot(aboutPos.x, aboutPos.y, 0)
+                const rotationSpeed = t / 10000;
+                const rotate = (p) => [p[0] * Math.cos(rotationSpeed) - p[1] * Math.sin(rotationSpeed), p[0] * Math.sin(rotationSpeed) + p[1] * Math.cos(rotationSpeed)]
+                const scale = 1/250;
+                for (let p of state.pos) {
+                    let r = rotate(p)
+                    var x = r[0];
+                    var y = r[1];
+                    var z = p[2];
+                    dot(x / scale + aboutPos.x, y / scale + aboutPos.y, z / scale)
+                    for (let h of state.history) {
+                        let prev = vec(0, 0)
+                        for (let pp of h) {
+                            ctx.beginPath();
+                            ctx.strokeStyle = `rgba(255, 0, 0, ${pp[2] + 0.5})`;
+                            let r = rotate(pp)
+                            var { x, y } = project(r[0] / scale + aboutPos.x, r[1] / scale + aboutPos.y, pp[2] / scale, true)
+                            if (prev.x != 0 && prev.y != 0) ctx.moveTo(prev.x + width/2, prev.y + height/2)
+                            prev = vec(x, y);
+                            ctx.lineTo(x + width / 2, y + height / 2)
+                            ctx.stroke();
+                        }
+                    }
+                }
             }
 
             function drawResearch(t) {
+                ctx.strokeStyle = `rgba(255, 0, 0, 0.5)`
                 let lbnlPos = cardPos['lbnl']
                 allDots = []
                 let shift = t / 10000 + followMouse.x / stageR / 50;
@@ -758,22 +1087,22 @@
                 let maxR = 70
                 for (let boundR = 40; boundR <= maxR; boundR += 10) {
                     let n = 10
-                    let mshift = (shift % (2*Math.PI))**2
+                    let mshift = (shift % (2 * Math.PI)) ** 2
                     let phi = 0
                     const sellipse = (theta) => boundR * (Math.abs(Math.cos(theta)) ** n + Math.abs(Math.sin(theta)) ** n) ** (-1 / n)
                     for (let z = 0; z >= -5; z -= 5) {
                         ctx.beginPath();
-                    for (let theta = 0; theta <= 2*Math.PI; theta += Math.PI/50) {
+                        for (let theta = 0; theta <= 2 * Math.PI; theta += Math.PI / 50) {
                             let r = sellipse(theta)
-                            var {x,y,_} = sphToCart(r, theta, phi)
+                            var { x, y, _ } = sphToCart(r, theta, phi)
                             var { x, y } = project(x + lanlPos.x, y + lanlPos.y, z, true)
                             ctx.lineTo(x + width / 2, y + height / 2)
                         }
-                    ctx.stroke();
+                        ctx.stroke();
                     }
-                    let ds = 5  
-                    for (let i = 0; i < ds; i++){
-                        let theta = shift + i*Math.PI*2/ ds + (boundR - 50)/5
+                    let ds = 5
+                    for (let i = 0; i < ds; i++) {
+                        let theta = shift + i * Math.PI * 2 / ds + (boundR - 50) / 5
                         let r = sellipse(theta)
                         var { x, y, z } = sphToCart(r, theta, phi)
                         dot(x + lanlPos.x, y + lanlPos.y, z);
@@ -783,7 +1112,7 @@
                     ctx.beginPath();
                     var { x, y } = project(startX + lanlPos.x, -maxR + lanlPos.y, 0, true)
                     ctx.moveTo(x + width / 2, y + height / 2)
-                    let shiftY = 20*(Math.sin(startX + shift) + 2)
+                    let shiftY = 20 * (Math.sin(startX + shift) + 2)
                     var { x, y } = project(startX + lanlPos.x, -maxR + lanlPos.y - shiftY, 0, true)
                     ctx.lineTo(x + width / 2, y + height / 2)
                     ctx.stroke();
@@ -792,11 +1121,16 @@
             }
 
             let lastTime = 0;
+            for (let i = 0; i < 500; i++)
+                stepPhysics(0.01)
             function update(time) {
                 // if (time - lastTime >= 1000/60) {
                 const dt = time - lastTime
                 scrollTop = window.scrollY
-                draw(time);
+                try {
+                    draw(time);
+                }
+                catch { }
                 lastTime = time;
                 followMouse.x += mouse.x
                 followMouse.y += mouse.y
@@ -806,6 +1140,7 @@
                 cursorPos.x += (mouse.x - cursorPos.x) * 0.2
                 cursorPos.y += (mouse.y - cursorPos.y) * 0.2
                 updateCursor()
+                if (isVisible['about']) stepPhysics(0.01)
                 // }
                 requestAnimationFrame(update);
             }
