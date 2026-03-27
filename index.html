@@ -579,7 +579,7 @@
             <div id="card-about">
 
             </div>
-            <p class="corner-label">THREE-BODY PROBLEM: BUTTERFLY I</p>
+            <p class="corner-label">THREE-BODY PROBLEM: YARN I</p>
         </div>
     </div>
     <div class="nohero" style="--pos: 2" id="research">
@@ -827,8 +827,8 @@
                 return { x, y }
             }
 
-            function dot(x, y, z) {
-                var { x, y } = project(x, y, z, true)
+            function dot(x, y, z, force=true) {
+                var { x, y } = project(x, y, z, force)
                 scale = z / stageR / 2 + 0.5
 
                 d = { x: width / 2 + x, y: height / 2 + y, a: scale, r: scale * stageSize }
@@ -892,26 +892,46 @@
 
             const G = 1.0;
             const m = [1.0, 1.0, 1.0];
-            // const z0 = 0.152224534898;
-            // const vx = 0.445821334436;
-            // const vy = 0.160715316235;
-            // const vz = 0.312117562854; // cool with 0.01
+            const z0 = 0.152224534898;
+            const vx = 0.445821334436;
+            const vy = 0.160715316235;
+            const vz = 0.312117562854; // cool with 0.01
 
             // const z0 = 0.25387857578;
             // const vx = 0.30855862740;
             // const vy = 0.55506896654;
             // const vz = 0.0034527925512; // d and b
 
-            const z0 = 0.153412;
-            const vx = 0.347111;
-            const vy = 0.532728;
-            const vz = 0.153412;
+            // const z0 = 0.153412;
+            // const vx = 0.347111;
+            // const vy = 0.532728;
+            // const vz = 0.153412;
 
             let state = {
                 pos: [[-1.0, 0, -z0 / 3], [1.0, 0, -z0 / 3], [0, 0, 2 * z0 / 3]],
                 vel: [[vx, vy, vz], [vx, vy, -vz], [-2 * vx, -2 * vy, 0]],
                 history: [[], [], []]
             };
+            const INITIAL_STATE = JSON.parse(JSON.stringify(state));
+
+            function resetOrbit() {
+                state.pos = INITIAL_STATE.pos.map(p => [...p]);
+                state.vel = INITIAL_STATE.vel.map(v => [...v]);
+                state.history = [[], [], []];
+                for (let i = 0; i < 100; i++)
+                    stepPhysics(0.01)
+            }
+
+            function checkStability() {
+                const threshold = 2.0;
+                for (let i = 0; i < 3; i++) {
+                    let dist = Math.sqrt(state.pos[i][0] ** 2 + state.pos[i][1] ** 2 + state.pos[i][2] ** 2);
+                    if (dist > threshold) {
+                        resetOrbit();
+                        break;
+                    }
+                }
+            }
 
             function getAcceleration(p) {
                 let acc = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
@@ -929,6 +949,7 @@
             }
 
             function stepPhysics(dt) {
+                checkStability()
                 const s = state;
                 const n = 3;
 
@@ -968,14 +989,14 @@
                     var x = r[0];
                     var y = r[1];
                     var z = p[2];
-                    dot(x / scale + aboutPos.x, y / scale + aboutPos.y, z / scale)
+                    dot(x / scale + aboutPos.x, y / scale + aboutPos.y, z / scale, false)
                     for (let h of state.history) {
                         let prev = vec(0, 0)
                         for (let pp of h) {
                             ctx.beginPath();
                             ctx.strokeStyle = `rgba(255, 0, 0, ${pp[2] + 0.5})`;
                             let r = rotate(pp)
-                            var { x, y } = project(r[0] / scale + aboutPos.x, r[1] / scale + aboutPos.y, pp[2] / scale, true)
+                            var { x, y } = project(r[0] / scale + aboutPos.x, r[1] / scale + aboutPos.y, pp[2] / scale, false)
                             if (prev.x != 0 && prev.y != 0) ctx.moveTo(prev.x + width/2, prev.y + height/2)
                             prev = vec(x, y);
                             ctx.lineTo(x + width / 2, y + height / 2)
@@ -1121,8 +1142,7 @@
             }
 
             let lastTime = 0;
-            for (let i = 0; i < 500; i++)
-                stepPhysics(0.01)
+            resetOrbit();
             function update(time) {
                 // if (time - lastTime >= 1000/60) {
                 const dt = time - lastTime
