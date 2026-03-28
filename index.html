@@ -571,15 +571,14 @@
                 <h1>Hi there!</h1>
                 <p>I study Physics and Data Science at UC Berkeley. I currently do research in computational physics at
                     the Lawrence Berkeley National Lab. I am primarily interested in physics research, especially in
-                    astrophysics and space sciences. I also do full-stack web development, and I am currently teaching
-                    CS-198: Full-Stack Web Development at UC Berkeley. I occasionally publish apps, games, and software
-                    for fun, and I also do freelance web development and client work in my spare time.
+                    astrophysics and space sciences. I also do full-stack web development, and I occasionally publish apps, games, and software
+                    for fun in my spare time.
                 </p>
             </div>
             <div id="card-about">
 
             </div>
-            <p class="corner-label">THREE-BODY PROBLEM: YARN I</p>
+            <p class="corner-label">THREE-BODY SYSTEM: YARN I</p>
         </div>
     </div>
     <div class="nohero" style="--pos: 2" id="research">
@@ -981,8 +980,8 @@
             function drawAbout(t) {
                 let aboutPos = cardPos['about']
                 // dot(aboutPos.x, aboutPos.y, 0)
-                const rotationSpeed = t / 10000;
-                const rotate = (p) => [p[0] * Math.cos(rotationSpeed) - p[1] * Math.sin(rotationSpeed), p[0] * Math.sin(rotationSpeed) + p[1] * Math.cos(rotationSpeed)]
+                let shift = t / 10000 + followMouse.x / stageR / 100;
+                const rotate = (p) => [p[0] * Math.cos(shift) - p[1] * Math.sin(shift), p[0] * Math.sin(shift) + p[1] * Math.cos(shift)]
                 const scale = 1/250;
                 for (let p of state.pos) {
                     let r = rotate(p)
