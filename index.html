@@ -16,10 +16,15 @@
         }
 
         :root {
+            /* --color: #555; */
+            /* --color: #ff4f4f; */
+            /* --color: #d2ff53; */
             --color: #fff;
             --background: #000000;
             font-size: 14pt;
+            /* font-style: italic; */
             font-weight: 500;
+            font-family: 'Georgia', 'Times New Roman', Times, serif;
             font-family: 'Inter', monospace;
         }
 
@@ -52,17 +57,13 @@
         .hero {
             width: 100%;
             height: 100vh;
-            position: relative;
         }
 
-        /* Each section canvas is absolute within its section */
-        .section-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
+        #canvas {
+            position: fixed;
             width: 100%;
-            height: 100%;
-            pointer-events: none;
+            height: 100vh;
+            /* transform: translateY(calc(var(--scroll)/5)) */
         }
 
         .navbar {
@@ -213,6 +214,7 @@
         .nohero {
             width: 100%;
             min-height: 100vh;
+            /* background-color: white; */
             border-top: 1px solid var(--color);
             z-index: 0;
             position: relative;
@@ -340,6 +342,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            /* background-color: white; */
         }
 
         .card-title {
@@ -396,6 +399,7 @@
 
         .about-content {
             width: 100%;
+            /* margin-top: 50px; */
             display: flex;
             gap: 50px;
             flex-direction: row;
@@ -432,6 +436,7 @@
         }
 
         .carousel-wrapper {
+            /* position: absolute; */
             left: 0;
             right: 0;
             margin-top: 35px;
@@ -489,6 +494,10 @@
 
         .project-card .card-video {
             position: absolute;
+            /* left: 50%;
+            top: 50%; */
+            /* transform: translate(-50%, -50%);
+            aspect-ratio: 16 / 9; */
             opacity: 0.8;
             z-index: -2;
             top: 0;
@@ -497,6 +506,7 @@
             height: 100%;
             object-fit: cover;
             object-position: center;
+            /* margin: -25px; */
             padding: 0;
         }
 
@@ -545,7 +555,7 @@
                 transform: translateX(-50%);
                 width: max-content;
             }
-
+            
             .footer {
                 display: flex;
                 align-items: center;
@@ -580,13 +590,19 @@
             <a class="link" data-label="→" href="./index.html">CPG</a>
         </div>
         <div class="nav">
+            <!-- <a class="swap-text" data-label="Research" style="font-size: 14pt;"><span>Research</span></a> -->
             <a class="link" data-label="→" href="#about">ABOUT</a>
             <a class="link" data-label="→" href="#research">RESEARCH</a>
             <a class="link" data-label="→" href="#projects">PROJECTS</a>
         </div>
     </div>
     <div class="hero" style="--pos: 0" id="hero">
-        <canvas id="canvas-hero" class="section-canvas"></canvas>
+        <canvas id="canvas"></canvas>
+        <!-- <div class="label">
+            <p>Physics + Data Science @ UC Berkeley</p>
+            <p>Computational Physics @ LANL</p>
+            <p>Full-Stack Developer</p>
+        </div> -->
         <div class="name active">
             <h1>CHASE GRAHAM</h1>
             <div class="knockout">
@@ -596,15 +612,13 @@
         <p class="description">COMPUTATIONAL PHYSICS</p>
     </div>
     <div class="nohero" style="--pos: 1" id="about">
-        <canvas id="canvas-about" class="section-canvas"></canvas>
         <h1 class="header swap-text" data-label="ABOUT"><span>ABOUT</span></h1>
         <div class="about-content">
             <div class="about-text">
                 <h1>Hi there!</h1>
                 <p>I study Physics and Data Science at UC Berkeley. I currently do research in computational physics at
                     the Lawrence Berkeley National Lab. I am primarily interested in physics research, especially in
-                    astrophysics and space sciences. I also do full-stack web development, and I occasionally publish
-                    apps, games, and software
+                    astrophysics and space sciences. I also do full-stack web development, and I occasionally publish apps, games, and software
                     for fun in my spare time.
                 </p>
             </div>
@@ -615,7 +629,6 @@
         </div>
     </div>
     <div class="nohero" style="--pos: 2" id="research">
-        <canvas id="canvas-research" class="section-canvas"></canvas>
         <h1 class="header swap-text" data-label="RESEARCH"><span>RESEARCH</span></h1>
         <div class="grid">
             <div class="card" id="card-lanl">
@@ -656,6 +669,8 @@
     <div class="nohero" style="--pos: 3" id="projects">
         <h1 class="header swap-text" data-label="PROJECTS"><span>PROJECTS</span></h1>
         <div class="carousel-wrapper">
+            <!-- <a class="carousel-scroll carousel-scroll-left">←</a>
+            <a class="carousel-scroll carousel-scroll-right">→</a> -->
             <div class="carousel">
                 <div class="card project-card">
                     <div class="gradient"></div>
@@ -726,112 +741,116 @@
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // --- Per-section canvases ---
-            const canvasHero = document.getElementById('canvas-hero');
-            const ctxHero = canvasHero.getContext('2d');
-            const canvasAbout = document.getElementById('canvas-about');
-            const ctxAbout = canvasAbout.getContext('2d');
-            const canvasResearch = document.getElementById('canvas-research');
-            const ctxResearch = canvasResearch.getContext('2d');
-
+            const canvas = document.getElementById('canvas')
+            const ctx = canvas.getContext('2d');
             let width = window.innerWidth;
             let height = window.innerHeight;
-
-            const vec = (x, y, z = 0) => ({ x, y, z });
-            let mouse = vec(0, 0);
-            let followMouse = vec(0, 0);
-            let cursorPos = vec(0, 0);
+            const vec = (x, y, z = 0) => { return { x, y, z } }
+            const vapply = (v, f) => vec(f(v.x), f(v.y), f(v.z))
+            const vmult = (v, a) => vapply(v, (x) => x * a)
+            let mouse = vec(0, 0)
+            let followMouse = vec(0, 0)
+            let targetScrollTop = 0
+            let scrollTop = 0
+            let cursorPos = vec(0, 0)
+            let cardNames = ['lanl', 'lbnl', 'nso', 'about']
             let cardPos = {};
             let cursorActive = false;
-            let scrollTop = 0;
-            let targetScrollTop = 0;
-            let renderScroll = 0;
+            const isVisible = {};
 
-            const focal = 500;
+            const f = 500;
             let stageR = 0;
-            const stageZ = -focal;
-            const clipZ = -100;
+            let stageZ = -f // depth of stage
+            const clipZ = -100
             let stageSize = 1;
 
-            const cursor = document.getElementById('cursor');
+            const cursor = document.getElementById('cursor')
 
             Array.from(document.getElementsByClassName('project-card')).forEach((el) => {
                 el.addEventListener('click', () => {
                     const parent = el.parentNode;
-                    parent.scrollTo({ left: el.offsetLeft - parent.clientWidth / 2 + el.clientWidth / 2 });
-                });
-            });
+                    parent.scrollTo({
+                        left: el.offsetLeft - parent.clientWidth / 2 + el.clientWidth / 2
+                    });
+                })
+            })
 
             window.onresize = () => {
                 width = window.innerWidth;
                 height = window.innerHeight;
-                canvasHero.width = canvasHero.parentElement.offsetWidth;
-                canvasHero.height = canvasHero.parentElement.offsetHeight;
-                canvasAbout.width = canvasAbout.parentElement.offsetWidth;
-                canvasAbout.height = canvasAbout.parentElement.offsetHeight;
-                canvasResearch.width = canvasResearch.parentElement.offsetWidth;
-                canvasResearch.height = canvasResearch.parentElement.offsetHeight;
-                stageR = Math.min(width, height) / 2.2;
-                stageSize = Math.min(width, height) / 100;
-                recalcCardPositions();
-            };
+                canvas.width = width;
+                canvas.height = height;
 
-            function recalcCardPositions() {
-                const getRelCenter = (cardEl, sectionEl) => {
-                    const cardRect = cardEl.getBoundingClientRect();
-                    const secRect = sectionEl.getBoundingClientRect();
-                    return vec(
-                        cardRect.left - secRect.left + cardRect.width / 2 - secRect.width / 2,
-                        secRect.height / 2 - (cardRect.top - secRect.top) - cardRect.height / 2
-                    );
-                };
-                const researchSection = document.getElementById('research');
-                cardPos['lanl'] = getRelCenter(document.getElementById('card-lanl'), researchSection);
-                cardPos['lbnl'] = getRelCenter(document.getElementById('card-lbnl'), researchSection);
-                cardPos['nso'] = getRelCenter(document.getElementById('card-nso'), researchSection);
-                const aboutSection = document.getElementById('about');
-                cardPos['about'] = getRelCenter(document.getElementById('card-about'), aboutSection);
+                stageR = Math.min(width, height) / 2.2 // was 2
+                stageSize = Math.min(width, height) / 100
+
+                const scrollX = window.scrollX || document.documentElement.scrollLeft;
+                const scrollY = window.scrollY || document.documentElement.scrollTop;
+                // y' = (y + scrollTop) * f / (z + stageZ)
+                // y'*stageZ/f-scrollTop
+                const getCenter = (rect) => vec(-rect.left + width / 2 - rect.width / 2, height / 2 - rect.top - rect.height / 2 - scrollY)
+                for (let name of cardNames) {
+                    cardPos[name] = getCenter(document.getElementById('card-' + name).getBoundingClientRect());
+                }
             }
-
             document.onmousemove = document.onmousedown = (e) => {
-                mouse.x = e.clientX - width / 2;
-                mouse.y = e.clientY - height / 2;
+                mouse.x = e.clientX - width / 2
+                mouse.y = e.clientY - height / 2
+
                 const target = e.target;
                 const isLinkTag = target.closest('a') !== null || target.tagName.toLowerCase() === 'a';
                 const isHovered = cursor.classList.contains('pointer');
-                if (isLinkTag && !isHovered) cursor.classList.add('pointer');
-                else if (!isLinkTag && isHovered) cursor.classList.remove('pointer');
-            };
-            document.onmouseleave = () => { cursor.style.display = 'none'; cursorActive = false; };
+                if (isLinkTag && !isHovered)
+                    cursor.classList.add('pointer');
+                else if (!isLinkTag && isHovered)
+                    cursor.classList.remove('pointer');
+            }
+            document.onmouseleave = (e) => {
+                cursor.style.display = 'none'
+                cursorActive = false;
+            }
             document.onmouseenter = (e) => {
-                cursor.style.display = 'block';
+                cursor.style.display = 'block'
                 cursorActive = true;
-                // Snap mouse to entry position so followMouse doesn't spike
-                mouse.x = e.clientX - width / 2;
-                mouse.y = e.clientY - height / 2;
-                followMouse.x = mouse.x * 0.1;
-                followMouse.y = mouse.y * 0.1;
-                cursorPos.x = mouse.x;
-                cursorPos.y = mouse.y;
-            };
+            }
             document.ontouchmove = (e) => {
-                let touch = e.touches[0];
-                mouse.x = touch.clientX - width / 2;
-                mouse.y = touch.clientY - height / 2;
-            };
-
-            window.onscroll = () => {
-                targetScrollTop = window.scrollY;
-                scrollTop = window.scrollY;
-                recalcCardPositions();
+                let touch = e.touches[0]
+                mouse.x = touch.clientX - width / 2
+                mouse.y = touch.clientY - height / 2
+            }
+            window.onscroll = (e) => {
                 document.querySelectorAll('.name, .swap-text').forEach(element => {
                     let pos = parseInt(getComputedStyle(element).getPropertyValue('--pos'));
-                    let cond = scrollTop >= (pos - 0.25) * window.innerHeight;
-                    if (pos == 0) cond = scrollTop <= 20;
-                    if (cond) element.classList.add('active');
-                    else element.classList.remove('active');
+                    // if (pos == null) return;
+                    let cond = scrollTop >= (pos - 0.25) * window.innerHeight// && scrollTop <= (pos + 0.5) * window.innerHeight;
+                    if (pos == 0) cond = scrollTop <= 20
+                    if (cond)
+                        element.classList.add('active')
+                    else
+                        element.classList.remove('active')
                 });
-            };
+            }
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        console.log(`${entry.target.id} is now on screen`);
+                        isVisible[entry.target.id] = true
+                    } else {
+                        isVisible[entry.target.id] = false
+                    }
+                });
+            });
+            const sections = document.querySelectorAll('.hero, .nohero');
+            sections.forEach((section) => observer.observe(section));
+
+            window.onscroll();
+            // setInterval(window.onscroll, 100);
+            window.onresize();
+            // document.onscroll = (e) => {
+            //     targetScrollTop = window.scrollY
+            //     document.documentElement.style.setProperty('--scroll', targetScrollTop + 'px')
+            //     e.preventDefault()
+            // }
 
             function updateCursor() {
                 if (cursorActive) {
@@ -841,98 +860,108 @@
             }
 
             function sphToCart(r, theta, phi) {
-                return {
-                    x: r * Math.sin(theta) * Math.cos(phi),
-                    z: r * Math.sin(theta) * Math.sin(phi),
-                    y: r * Math.cos(theta)
-                };
+                let x = r * Math.sin(theta) * Math.cos(phi)
+                let z = r * Math.sin(theta) * Math.sin(phi)
+                let y = r * Math.cos(theta)
+                return { x, y, z }
             }
 
-            // Project 3D point to 2D, relative to canvas center.
-            // cursorLocal: {x,y} of cursor in canvas-local coords (relative to canvas center).
-            function project(x, y, z, cw, ch, force = false, cursorLocal = null) {
-                x = x * focal / (z + stageZ);
-                y = y * focal / (z + stageZ);
-                if (force && cursorActive && cursorLocal) {
-                    let dhx = x - cursorLocal.x, dhy = y - cursorLocal.y;
-                    let d = 0 - (Math.hypot(dhx, dhy, z) / 50) ** 2;
-                    if (d > -1) d = -1;
-                    x += dhx / d;
-                    y += dhy / d;
+            function project(x, y, z, force = false) {
+                x = x * f / (z + stageZ)
+                y = (y + scrollTop) * f / (z + stageZ)
+
+                if (force && cursorActive) {
+                    let dhat = vec(x - cursorPos.x, y - cursorPos.y, z - 0)
+                    let d = 0 - (Math.hypot(dhat.x, dhat.y, dhat.z) / 50) ** 2
+                    if (d > -1) d = -1
+                    x += dhat.x / d
+                    y += dhat.y / d
                 }
-                if (z + stageZ >= clipZ) return { x: null, y: null };
-                return { x, y };
+
+                if (z + stageZ >= clipZ) return { x: null, y: null }
+                return { x, y }
             }
 
-            // Get cursor position relative to a section canvas center
-            function getCursorLocal(sectionEl, cw, ch) {
-                if (!cursorActive) return null;
-                const rect = sectionEl.getBoundingClientRect();
-                return {
-                    x: (cursorPos.x + width / 2) - (rect.left + cw / 2),
-                    y: (cursorPos.y + height / 2) - (rect.top + ch / 2)
-                };
-            }
+            function dot(x, y, z, force=true) {
+                var { x, y } = project(x, y, z, force)
+                scale = z / stageR / 2 + 0.5
 
-            // ---- HERO ----
-            let heroDots = [];
-            function dot_hero(x, y, z, cl) {
-                const cw = canvasHero.width, ch = canvasHero.height;
-                const { x: px, y: py } = project(x, y, z, cw, ch, true, cl);
-                if (px == null) return;
-                const scale = z / stageR / 2 + 0.5;
-                const d = { x: cw / 2 + px, y: ch / 2 + py, a: scale, r: scale * stageSize };
-                heroDots.push(d);
-                ctxHero.fillStyle = `rgba(255,50,50,${d.a})`;
-                ctxHero.beginPath();
-                ctxHero.arc(d.x, d.y, d.r, 0, 2 * Math.PI);
-                ctxHero.fill();
-                ctxHero.beginPath();
-                ctxHero.moveTo(d.x, d.y);
+                d = { x: width / 2 + x, y: height / 2 + y, a: scale, r: scale * stageSize }
+                dots.push(d)
+                ctx.lineTo(d.x, d.y)
+                // ctx.stroke()
+                ctx.fillStyle = `rgba(255, 50, 50, ${d.a})`
+                ctx.beginPath();
+                ctx.arc(d.x, d.y, d.r, 0, 2 * Math.PI)
+                ctx.fill()
+                ctx.beginPath();
+                ctx.moveTo(d.x, d.y)
             }
 
             function drawHero(t) {
-                const cw = canvasHero.width, ch = canvasHero.height;
-                ctxHero.clearRect(0, 0, cw, ch);
-                heroDots = [];
-                const cl = getCursorLocal(canvasHero.parentElement, cw, ch);
+                dots = []
                 let phi = t / 10000 + followMouse.x / stageR / 50;
                 let theta = 0;
-                const n = 1000;
-                // renderScroll shrinks the sphere as you scroll down
-                let r = stageR / 1.5 - (Math.hypot(followMouse.x, followMouse.y) / stageR / 10) ** 2 - renderScroll / 5;
+                let n = 1000;
+                let shiftY = 0;
+                let r = stageR / 1.5 - (Math.hypot(followMouse.x, followMouse.y) / stageR / 10) ** 2 - scrollTop/5
                 for (let i = 0; i < n; i++) {
-                    const { x, y, z } = sphToCart(r, theta, phi);
-                    theta += Math.PI / n;
-                    phi += 0.5;
-                    dot_hero(x, y, z, cl);
+                    let { x, y, z } = sphToCart(r, theta, phi)
+                    theta += Math.PI / n
+                    phi += 0.5
+                    dot(x, y + shiftY, z)
                 }
-                ctxHero.beginPath();
-                for (let i = 0; i < heroDots.length; i += 2) {
-                    const d = heroDots[i];
-                    ctxHero.strokeStyle = `rgba(255,0,0,${d.a - 0.1})`;
-                    ctxHero.lineTo(d.x, d.y);
+                ctx.beginPath();
+                for (let i = 0; i < dots.length; i += 2) {
+                    d = dots[i]
+                    ctx.strokeStyle = `rgba(255, 0, 0, ${(d.a - 0.1)})`
+                    ctx.lineTo(d.x, d.y)
                 }
-                ctxHero.stroke();
+                ctx.stroke();
 
-                const boundR = 3;
-                const initTheta = Math.asin(Math.sqrt(1 / boundR));
+                let boundR = 3
+                let initTheta = Math.asin(Math.sqrt(1 / boundR));
                 for (let phiOff = 0; phiOff < 2 * Math.PI; phiOff += 0.5) {
-                    ctxHero.strokeStyle = `rgba(255,0,0,0.5)`;
-                    ctxHero.beginPath();
-                    for (let th = initTheta; th <= Math.PI - initTheta; th += 0.01) {
-                        const fieldR = boundR * r * Math.sin(th) ** 2;
-                        const { x, y, z } = sphToCart(fieldR, th, phi + phiOff);
-                        const { x: px, y: py } = project(x, y, z, cw, ch, true, cl);
-                        if (px != null) ctxHero.lineTo(cw / 2 + px, ch / 2 + py);
-                        else { ctxHero.stroke(); ctxHero.beginPath(); }
+                    ctx.strokeStyle = `rgba(255, 0, 0, 0.5)`
+                    ctx.beginPath();
+                    for (let theta = initTheta; theta <= Math.PI - initTheta; theta += 0.01) {
+                        let fieldR = boundR * r * Math.sin(theta) ** 2
+                        var { x, y, z } = sphToCart(fieldR, theta, phi + phiOff)
+                        var { x, y } = project(x, y + shiftY, z)
+                        if (x && y) ctx.lineTo(width / 2 + x, height / 2 + y)
+                        else {
+                            ctx.stroke();
+                            ctx.beginPath()
+                        }
                     }
-                    ctxHero.stroke();
+                    ctx.stroke();
                 }
             }
 
-            // ---- ABOUT (Lorenz attractor) ----
-            const z0 = 0.152224534898, vx = 0.445821334436, vy = 0.160715316235, vz = 0.312117562854;
+            function draw(t) {
+                ctx.clearRect(0, 0, width, height)
+                if (isVisible['hero']) drawHero(t)
+                if (isVisible['research']) drawResearch(t)
+                if (isVisible['about']) drawAbout(t)
+            }
+
+            const G = 1.0;
+            const m = [1.0, 1.0, 1.0];
+            const z0 = 0.152224534898;
+            const vx = 0.445821334436;
+            const vy = 0.160715316235;
+            const vz = 0.312117562854; // cool with 0.01
+
+            // const z0 = 0.25387857578;
+            // const vx = 0.30855862740;
+            // const vy = 0.55506896654;
+            // const vz = 0.0034527925512; // d and b
+
+            // const z0 = 0.153412;
+            // const vx = 0.347111;
+            // const vy = 0.532728;
+            // const vz = 0.153412;
+
             let state = {
                 pos: [[-1.0, 0, -z0 / 3], [1.0, 0, -z0 / 3], [0, 0, 2 * z0 / 3]],
                 vel: [[vx, vy, vz], [vx, vy, -vz], [-2 * vx, -2 * vy, 0]],
@@ -944,19 +973,62 @@
                 state.pos = INITIAL_STATE.pos.map(p => [...p]);
                 state.vel = INITIAL_STATE.vel.map(v => [...v]);
                 state.history = [[], [], []];
-                for (let i = 0; i < 1000; i++) stepPhysics(0.01);
+                for (let i = 0; i < 1000; i++)
+                    stepPhysics(0.01)
+            }
+
+            function checkStability() {
+                const threshold = 2.0;
+                for (let i = 0; i < 3; i++) {
+                    let dist = Math.sqrt(state.pos[i][0] ** 2 + state.pos[i][1] ** 2 + state.pos[i][2] ** 2);
+                    if (dist > threshold) {
+                        resetOrbit();
+                        break;
+                    }
+                }
+            }
+
+            function getAcceleration(p) {
+                let acc = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+                const epsilon = 1e-9;
+                for (let i = 0; i < 3; i++) {
+                    for (let j = 0; j < 3; j++) {
+                        if (i === j) continue;
+                        let dx = p[j][0] - p[i][0], dy = p[j][1] - p[i][1], dz = p[j][2] - p[i][2];
+                        let distSq = dx * dx + dy * dy + dz * dz + epsilon;
+                        let f = G * m[j] / Math.pow(distSq, 1.5);
+                        acc[i][0] += dx * f; acc[i][1] += dy * f; acc[i][2] += dz * f;
+                    }
+                }
+                return acc;
             }
 
             function stepPhysics(dt) {
-                dt = dt / 5;
-                const s = state, sigma = 10.0, rho = 28.0, beta = 8.0 / 3.0, subSteps = 5;
-                const scaleFac = stageR / 10000;
+                dt = dt/5;
+                const s = state;
+
+                const sigma = 10.0;
+                const rho = 28.0;
+                const beta = 8.0 / 3.0;
+
+                const subSteps = 5;
+
+                const scaleFac = stageR/10000;
+
                 for (let step = 0; step < subSteps; step++) {
                     for (let i = 0; i < s.pos.length; i++) {
-                        const x = s.pos[i][0] / scaleFac, y = s.pos[i][1] / scaleFac, z = s.pos[i][2] / scaleFac + 25;
-                        s.pos[i][0] = (x + sigma * (y - x) * dt) * scaleFac;
-                        s.pos[i][1] = (y + (x * (rho - z) - y) * dt) * scaleFac;
-                        s.pos[i][2] = ((z + (x * y - beta * z) * dt) - 25) * scaleFac;
+                        const x = s.pos[i][0] / scaleFac;
+                        const y = s.pos[i][1] / scaleFac;
+                        const z = (s.pos[i][2] / scaleFac) + 25;
+                        const dx = sigma * (y - x);
+                        const dy = x * (rho - z) - y;
+                        const dz = x * y - beta * z;
+                        const nextX = x + dx * dt;
+                        const nextY = y + dy * dt;
+                        const nextZ = z + dz * dt;
+                        s.pos[i][0] = nextX * scaleFac;
+                        s.pos[i][1] = nextY * scaleFac;
+                        s.pos[i][2] = (nextZ - 25) * scaleFac;
                     }
                 }
                 for (let i = 0; i < s.pos.length; i++) {
@@ -966,206 +1038,207 @@
             }
 
             const rotMatrix = (p, t) => {
-                // Face-on: attractor lives in XY plane facing the viewer.
-                // Only a gentle Z-axis spin from mouse X, same scale as other effects.
-                const spin = followMouse.x / stageR / 50;
+                let shift = t / 10000 + followMouse.x / stageR / 50;
+                let pitch = t / 15000 + followMouse.y / stageR / 20;
                 let [x, y, z] = p;
-                const cosS = Math.cos(spin), sinS = Math.sin(spin);
-                // rotate in XY plane (spins the face like a clock hand)
-                const x1 = x * cosS - y * sinS;
-                const y1 = x * sinS + y * cosS;
-                // z stays as depth — keep small so it's mostly flat
-                return [x1, y1, z];
+                const cosS = Math.cos(shift);
+                const sinS = Math.sin(shift);
+                let x1 = x * cosS - z * sinS;
+                let z1 = x * sinS + z * cosS;
+                let y1 = y;
+                const cosP = Math.cos(pitch);
+                const sinP = Math.sin(pitch);
+                let y2 = y1 * cosP - z1 * sinP;
+                let z2 = y1 * sinP + z1 * cosP;
+                let x2 = x1;
+                return [x2, y2, z2];
             };
 
-            // Draw attractor directly in 2D canvas space (face-on, no projection clipping).
-            // sx/sy are already canvas-local screen coords relative to canvas center.
-            function dot_about(sx, sy, alpha) {
-                const cw = canvasAbout.width, ch = canvasAbout.height;
-                ctxAbout.fillStyle = `rgba(255,50,50,${alpha})`;
-                ctxAbout.beginPath();
-                ctxAbout.arc(cw / 2 + sx, ch / 2 + sy, stageSize * 0.5, 0, 2 * Math.PI);
-                ctxAbout.fill();
-            }
-
             function drawAbout(t) {
-                const cw = canvasAbout.width, ch = canvasAbout.height;
-                ctxAbout.clearRect(0, 0, cw, ch);
-                const aboutPos = cardPos['about'];
-                if (!aboutPos) return;
-                const scale = 1 / 300;
-
-                // Draw trail lines for each history strand
-                for (const h of state.history) {
-                    let prevSx = null, prevSy = null;
-                    let i = 0;
-                    for (const pp of h) {
-                        i++;
-                        const r = rotMatrix(pp, t);
-                        // Map attractor coords to screen: x->right, y->up (flip y), z->depth (ignored for pos)
-                        const sx = r[0] / scale + aboutPos.x;
-                        const sy = -r[1] / scale + aboutPos.y; // flip y so attractor is right-side up
-                        // Use z for subtle opacity variation
-                        const alpha = Math.min(Math.max(r[2] / scale / 500 + 0.35, 0.1), 0.5);
-                        ctxAbout.strokeStyle = `rgba(255,0,0,${alpha})`;
-                        if (prevSx !== null) {
-                            ctxAbout.beginPath();
-                            ctxAbout.moveTo(cw / 2 + prevSx, ch / 2 + prevSy);
-                            ctxAbout.lineTo(cw / 2 + sx, ch / 2 + sy);
-                            ctxAbout.stroke();
+                let aboutPos = cardPos['about']
+                // dot(aboutPos.x, aboutPos.y, 0)
+                const scale = 1/300;
+                for (let p of state.pos) {
+                    let r = rotMatrix(p, t)
+                    var x = r[0];
+                    var y = r[1];
+                    var z = r[2];
+                    dot(x / scale + aboutPos.x, y / scale + aboutPos.y, z / scale, false)
+                    for (let h of state.history) {
+                        let prev = vec(0, 0)
+                        let i = 0;
+                        for (let pp of h) {
+                            ctx.beginPath();
+                            i++
+                            let r = rotMatrix(pp, t)
+                            ctx.strokeStyle = `rgba(255, 0, 0, ${Math.min(r[2]/5 + 0.3, 0.5)})`;
+                            var { x, y } = project(r[0] / scale + aboutPos.x, r[1] / scale + aboutPos.y, r[2] / scale, false)
+                            if (i % 125 == 0) dot(r[0] / scale + aboutPos.x, r[1] / scale + aboutPos.y, r[2] / scale, false)
+                            if (prev.x != 0 && prev.y != 0) ctx.moveTo(prev.x + width/2, prev.y + height/2)
+                            prev = vec(x, y);
+                            ctx.lineTo(x + width / 2, y + height / 2)
+                            ctx.stroke();
                         }
-                        if (i % 125 == 0) dot_about(sx, sy, alpha + 0.2);
-                        prevSx = sx; prevSy = sy;
                     }
                 }
-                // Draw current body positions on top
-                for (const p of state.pos) {
-                    const r = rotMatrix(p, t);
-                    const sx = r[0] / scale + aboutPos.x;
-                    const sy = -r[1] / scale + aboutPos.y;
-                    dot_about(sx, sy, 0.9);
-                }
-            }
-
-            // ---- RESEARCH ----
-            function dot_research(x, y, z, cl) {
-                const cw = canvasResearch.width, ch = canvasResearch.height;
-                const { x: px, y: py } = project(x, y, z, cw, ch, true, cl);
-                if (px == null) return null;
-                const scale = z / stageR / 2 + 0.5;
-                const d = { x: cw / 2 + px, y: ch / 2 + py, a: scale, r: scale * stageSize };
-                ctxResearch.fillStyle = `rgba(255,50,50,${d.a})`;
-                ctxResearch.beginPath();
-                ctxResearch.arc(d.x, d.y, d.r, 0, 2 * Math.PI);
-                ctxResearch.fill();
-                ctxResearch.beginPath();
-                ctxResearch.moveTo(d.x, d.y);
-                return d;
             }
 
             function drawResearch(t) {
-                const cw = canvasResearch.width, ch = canvasResearch.height;
-                ctxResearch.clearRect(0, 0, cw, ch);
-                ctxResearch.strokeStyle = `rgba(255,0,0,0.5)`;
-                const researchSection = document.getElementById('research');
-                const cl = getCursorLocal(researchSection, cw, ch);
+                ctx.strokeStyle = `rgba(255, 0, 0, 0.5)`
+                let lbnlPos = cardPos['lbnl']
+                allDots = []
+                let shift = t / 10000 + followMouse.x / stageR / 50;
+                for (let x = -100; x <= 100; x += 20) {
+                    dots = []
+                    for (let t = 0; t <= 2 * Math.PI; t += Math.PI / 5) {
+                        let r = (x / 10) ** 2
+                        let dy = r * Math.cos(t + shift)
+                        let dz = r * Math.sin(t + shift)
+                        dot(lbnlPos.x + x, dy + lbnlPos.y, dz)
+                    }
+                    allDots.push(dots)
+                }
+                for (let ring of allDots) {
+                    ctx.beginPath();
+                    for (let d of ring) {
+                        ctx.lineTo(d.x, d.y)
+                    }
+                    ctx.stroke();
+                }
+                for (let i = 0; i < allDots[0].length; i++) {
+                    ctx.beginPath();
+                    for (let ring of allDots) {
+                        let d = ring[i]
+                        ctx.lineTo(d.x, d.y)
+                    }
+                    ctx.stroke();
+                }
+                // allDots = []
+                // let r = 75;
+                // for (let theta = 0; theta <= Math.PI; theta += Math.PI/10) {
+                //     dots = []
+                //     for (let phi = 0; phi <= 2 * Math.PI; phi += Math.PI / 5) {
+                //         let { x, y, z } = sphToCart(r, theta, phi + shift)
+                //         dot(startX + x, startY + y, z)
+                //     }
+                //     allDots.push(dots)
+                // }
+                // for (let ring of allDots) {
+                //     ctx.beginPath();
+                //     for (let d of ring) {
+                //         ctx.lineTo(d.x, d.y)
+                //     }
+                //     ctx.stroke();
+                // }
+                // for (let i = 0; i < allDots[0].length; i++) {
+                //     ctx.beginPath();
+                //     for (let ring of allDots) {
+                //         let d = ring[i]
+                //         ctx.lineTo(d.x, d.y)
+                //     }
+                //     ctx.stroke();
+                // }
 
-                const shift = t / 10000 + followMouse.x / stageR / 50;
-
-                // LANL: torus/paraboloid (particle-in-cell rings)
-                const lanlPos = cardPos['lanl'];
-                if (lanlPos) {
-                    let allDots = [];
-                    for (let x = -100; x <= 100; x += 20) {
-                        let ring = [];
-                        for (let th = 0; th <= 2 * Math.PI; th += Math.PI / 5) {
-                            const r = (x / 10) ** 2;
-                            const d = dot_research(lanlPos.x + x, r * Math.cos(th + shift) + lanlPos.y, r * Math.sin(th + shift), cl);
-                            if (d) ring.push(d);
+                let nsoPos = cardPos['nso']
+                dots = []
+                dot(nsoPos.x, nsoPos.y, 0);
+                let d = dots[0]
+                for (let boundR = 50; boundR <= 100; boundR += 50) {
+                    for (let phiOff = 0; phiOff < 2 * Math.PI; phiOff += Math.PI / 5) {
+                        ctx.beginPath();
+                        for (let theta = 0; theta <= Math.PI; theta += Math.PI / 20) {
+                            let fieldR = boundR * Math.sin(theta)
+                            var { x, y, z } = sphToCart(fieldR, theta, shift + phiOff)
+                            // toDraw.push({x, y, z})
+                            var { x, y } = project(x + nsoPos.x, y + nsoPos.y, z, true)
+                            ctx.lineTo(x + width / 2, y + height / 2)
                         }
-                        allDots.push(ring);
-                    }
-                    for (const ring of allDots) {
-                        ctxResearch.beginPath();
-                        for (const d of ring) ctxResearch.lineTo(d.x, d.y);
-                        ctxResearch.stroke();
-                    }
-                    for (let i = 0; i < (allDots[0] || []).length; i++) {
-                        ctxResearch.beginPath();
-                        for (const ring of allDots) if (ring[i]) ctxResearch.lineTo(ring[i].x, ring[i].y);
-                        ctxResearch.stroke();
+                        ctx.stroke();
+
+                        let theta = shift + phiOff
+                        let fieldR = boundR * Math.sin(theta)
+                        var { x, y, z } = sphToCart(fieldR, theta, shift + phiOff)
+                        dot(x + nsoPos.x, y + nsoPos.y, z);
                     }
                 }
 
-                // LBNL: dark energy / cosmological field lines (dipole)
-                const lbnlPos = cardPos['lbnl'];
-                if (lbnlPos) {
-                    for (let boundR = 50; boundR <= 100; boundR += 50) {
-                        for (let phiOff = 0; phiOff < 2 * Math.PI; phiOff += Math.PI / 5) {
-                            ctxResearch.beginPath();
-                            for (let th = 0; th <= Math.PI; th += Math.PI / 20) {
-                                const fieldR = boundR * Math.sin(th);
-                                const { x, y, z } = sphToCart(fieldR, th, shift + phiOff);
-                                const { x: px, y: py } = project(x + lbnlPos.x, y + lbnlPos.y, z, cw, ch, true, cl);
-                                if (px != null) ctxResearch.lineTo(cw / 2 + px, ch / 2 + py);
-                            }
-                            ctxResearch.stroke();
-                            const th2 = shift + phiOff;
-                            const { x, y, z } = sphToCart(boundR * Math.sin(th2), th2, shift + phiOff);
-                            dot_research(x + lbnlPos.x, y + lbnlPos.y, z, cl);
+                // for (let boundR = 10; boundR <= 100; boundR += 20) {
+                //     ctx.beginPath();
+                //     for (let theta = 0; theta <= 2*Math.PI; theta += Math.PI/10) {
+                //         let fieldR = boundR * Math.sin(theta)
+                //         var x = boundR *Math.cos(theta);
+                //         var y = boundR*Math.sin(theta)
+                //         var { x, y } = project(x + nsoPos.x, y + nsoPos.y, 0, true)
+                //         ctx.lineTo(x + width / 2, y + height / 2)
+                //     }
+                //     ctx.stroke();
+                //     let theta = shift + boundR*shift/10
+                //     var x = boundR * Math.cos(theta);
+                //     var y = boundR * Math.sin(theta)
+                //     dot(x + nsoPos.x, y + nsoPos.y, 0);
+                //     var x = boundR * Math.cos(theta + Math.PI);
+                //     var y = boundR * Math.sin(theta + Math.PI)
+                //     dot(x + nsoPos.x, y + nsoPos.y, 0);
+                // }
+
+                let lanlPos = cardPos['lanl']
+                let maxR = 70
+                for (let boundR = 40; boundR <= maxR; boundR += 10) {
+                    let n = 10
+                    let mshift = (shift % (2 * Math.PI)) ** 2
+                    let phi = 0
+                    const sellipse = (theta) => boundR * (Math.abs(Math.cos(theta)) ** n + Math.abs(Math.sin(theta)) ** n) ** (-1 / n)
+                    for (let z = 0; z >= -5; z -= 5) {
+                        ctx.beginPath();
+                        for (let theta = 0; theta <= 2 * Math.PI; theta += Math.PI / 50) {
+                            let r = sellipse(theta)
+                            var { x, y, _ } = sphToCart(r, theta, phi)
+                            var { x, y } = project(x + lanlPos.x, y + lanlPos.y, z, true)
+                            ctx.lineTo(x + width / 2, y + height / 2)
                         }
+                        ctx.stroke();
+                    }
+                    let ds = 5
+                    for (let i = 0; i < ds; i++) {
+                        let theta = shift + i * Math.PI * 2 / ds + (boundR - 50) / 5
+                        let r = sellipse(theta)
+                        var { x, y, z } = sphToCart(r, theta, phi)
+                        dot(x + lanlPos.x, y + lanlPos.y, z);
                     }
                 }
-
-                // NSO: superellipse + sine wave (heliospheric magnetic field)
-                const nsoPos = cardPos['nso'];
-                if (nsoPos) {
-                    const maxR = 70;
-                    for (let boundR = 40; boundR <= maxR; boundR += 10) {
-                        const n = 10;
-                        const sellipse = (th) => boundR * (Math.abs(Math.cos(th)) ** n + Math.abs(Math.sin(th)) ** n) ** (-1 / n);
-                        for (let z = 0; z >= -5; z -= 5) {
-                            ctxResearch.beginPath();
-                            for (let th = 0; th <= 2 * Math.PI; th += Math.PI / 50) {
-                                const r = sellipse(th);
-                                const { x: px, y: py } = project(r * Math.cos(th) + nsoPos.x, r * Math.sin(th) + nsoPos.y, z, cw, ch, true, cl);
-                                if (px != null) ctxResearch.lineTo(cw / 2 + px, ch / 2 + py);
-                            }
-                            ctxResearch.stroke();
-                        }
-                        for (let i = 0; i < 5; i++) {
-                            const th = shift + i * Math.PI * 2 / 5 + (boundR - 50) / 5;
-                            const r = sellipse(th);
-                            dot_research(r * Math.cos(th) + nsoPos.x, r * Math.sin(th) + nsoPos.y, 0, cl);
-                        }
-                    }
-                    for (let startX = -50; startX <= 50; startX += 10) {
-                        const shiftY = 20 * (Math.sin(startX + shift) + 2);
-                        const { x: px1, y: py1 } = project(startX + nsoPos.x, -maxR + nsoPos.y, 0, cw, ch, true, cl);
-                        const { x: px2, y: py2 } = project(startX + nsoPos.x, -maxR + nsoPos.y - shiftY, 0, cw, ch, true, cl);
-                        if (px1 != null && px2 != null) {
-                            ctxResearch.beginPath();
-                            ctxResearch.moveTo(cw / 2 + px1, ch / 2 + py1);
-                            ctxResearch.lineTo(cw / 2 + px2, ch / 2 + py2);
-                            ctxResearch.stroke();
-                        }
-                        dot_research(startX + nsoPos.x, -maxR + nsoPos.y - shiftY, 0, cl);
-                    }
+                for (var startX = -50; startX <= 50; startX += 10) {
+                    ctx.beginPath();
+                    var { x, y } = project(startX + lanlPos.x, -maxR + lanlPos.y, 0, true)
+                    ctx.moveTo(x + width / 2, y + height / 2)
+                    let shiftY = 20 * (Math.sin(startX + shift) + 2)
+                    var { x, y } = project(startX + lanlPos.x, -maxR + lanlPos.y - shiftY, 0, true)
+                    ctx.lineTo(x + width / 2, y + height / 2)
+                    ctx.stroke();
+                    dot(startX + lanlPos.x, -maxR + lanlPos.y - shiftY, 0)
                 }
             }
 
             let lastTime = 0;
             resetOrbit();
-
-            const isVisible = {};
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach((entry) => { isVisible[entry.target.id] = entry.isIntersecting; });
-            });
-            document.querySelectorAll('.hero, .nohero').forEach((s) => observer.observe(s));
-
-            window.onscroll();
-            window.onresize();
-
             function update(time) {
-                scrollTop = window.scrollY;
-                // Smooth scroll value for hero shrink effect
-                renderScroll += (targetScrollTop - renderScroll) * 0.5;
-
+                // if (time - lastTime >= 1000/60) {
+                const dt = time - lastTime
+                scrollTop = window.scrollY
                 try {
-                    if (isVisible['hero']) drawHero(time);
-                    if (isVisible['about']) { stepPhysics(0.01); drawAbout(time); }
-                    if (isVisible['research']) drawResearch(time);
-                } catch (e) { }
-
+                    draw(time);
+                }
+                catch { }
                 lastTime = time;
-                // followMouse gives smooth lag for rotation
-                followMouse.x += mouse.x;
-                followMouse.y += mouse.y;
+                followMouse.x += mouse.x
+                followMouse.y += mouse.y
                 followMouse.x *= 0.95;
                 followMouse.y *= 0.95;
-                cursorPos.x += (mouse.x - cursorPos.x) * 0.2;
-                cursorPos.y += (mouse.y - cursorPos.y) * 0.2;
-                updateCursor();
+
+                cursorPos.x += (mouse.x - cursorPos.x) * 0.2
+                cursorPos.y += (mouse.y - cursorPos.y) * 0.2
+                updateCursor()
+                if (isVisible['about']) stepPhysics(0.01)
+                // }
                 requestAnimationFrame(update);
             }
             requestAnimationFrame(update);
