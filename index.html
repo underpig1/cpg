@@ -612,10 +612,10 @@
         <p class="description">COMPUTATIONAL PHYSICS</p>
     </div>
     <div class="nohero" style="--pos: 1" id="about">
-        <h1 class="header swap-text" data-label="ABOUT"><span>ABOUT</span></h1>
+        <h1 class="header swap-text" data-label="// ABOUT"><span>// ABOUT</span></h1>
         <div class="about-content">
             <div class="about-text">
-                <h1>Hi there!</h1>
+                <h1>// PHYSICS @ BERKELEY</h1>
                 <p>I study Physics and Data Science at UC Berkeley. I currently do research in computational physics at
                     the Lawrence Berkeley National Lab. I am primarily interested in physics research, especially in
                     astrophysics and space sciences. I also do full-stack web development, and I occasionally publish apps, games, and software
@@ -625,7 +625,7 @@
             <div id="card-about">
 
             </div>
-            <p class="corner-label">THREE-BODY SYSTEM: YARN I</p>
+            <p class="corner-label">LORENZ ATTRACTOR // CHAOS THEORY</p>
         </div>
     </div>
     <div class="nohero" style="--pos: 2" id="research">
@@ -758,7 +758,7 @@
             let cursorActive = false;
             const isVisible = {};
 
-            const f = 500;
+            const f = 750;
             let stageR = 0;
             let stageZ = -f // depth of stage
             const clipZ = -100
@@ -807,7 +807,7 @@
             }
             document.onmouseleave = (e) => {
                 cursor.style.display = 'none'
-                cursorActive = false;
+                // cursorActive = false;
             }
             document.onmouseenter = (e) => {
                 cursor.style.display = 'block'
@@ -963,120 +963,113 @@
             // const vz = 0.153412;
 
             let state = {
-                pos: [[-1.0, 0, -z0 / 3], [1.0, 0, -z0 / 3], [0, 0, 2 * z0 / 3]],
-                vel: [[vx, vy, vz], [vx, vy, -vz], [-2 * vx, -2 * vy, 0]],
-                history: [[], [], []]
+                pos: [[-1.0, 0, -z0 / 3], [1.0, 0, -z0 / 3]],
+                vel: [[vx, vy, vz], [vx, vy, -vz]],
+                history: [[], []]
             };
             const INITIAL_STATE = JSON.parse(JSON.stringify(state));
 
             function resetOrbit() {
                 state.pos = INITIAL_STATE.pos.map(p => [...p]);
                 state.vel = INITIAL_STATE.vel.map(v => [...v]);
-                state.history = [[], [], []];
+                state.history = [[], []];
                 for (let i = 0; i < 1000; i++)
                     stepPhysics(0.01)
             }
 
-            function checkStability() {
-                const threshold = 2.0;
-                for (let i = 0; i < 3; i++) {
-                    let dist = Math.sqrt(state.pos[i][0] ** 2 + state.pos[i][1] ** 2 + state.pos[i][2] ** 2);
-                    if (dist > threshold) {
-                        resetOrbit();
-                        break;
-                    }
-                }
-            }
-
-            function getAcceleration(p) {
-                let acc = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
-                const epsilon = 1e-9;
-                for (let i = 0; i < 3; i++) {
-                    for (let j = 0; j < 3; j++) {
-                        if (i === j) continue;
-                        let dx = p[j][0] - p[i][0], dy = p[j][1] - p[i][1], dz = p[j][2] - p[i][2];
-                        let distSq = dx * dx + dy * dy + dz * dz + epsilon;
-                        let f = G * m[j] / Math.pow(distSq, 1.5);
-                        acc[i][0] += dx * f; acc[i][1] += dy * f; acc[i][2] += dz * f;
-                    }
-                }
-                return acc;
-            }
+            const LORENZ_CONFIG = {
+                xAxis: 0,          // 0 = Lorenz X, 1 = Lorenz Y, 2 = Lorenz Z
+                yAxis: 1,          // Which axis maps to screen Y
+                zAxis: 2,          // Which axis maps to screen Z (depth)
+                pitchOffset: Math.PI,  // Manual tilt up/down (in radians)
+                yawOffset: -Math.PI/2 + 0.9     // Manual tilt left/right (in radians)
+            };
 
             function stepPhysics(dt) {
-                dt = dt/5;
+                const stepDt = dt / 5;
+                const scaleFac = stageR / 10000;
                 const s = state;
 
-                const sigma = 10.0;
+                const sigma = 11.0;
                 const rho = 28.0;
                 const beta = 8.0 / 3.0;
-
                 const subSteps = 5;
-
-                const scaleFac = stageR/10000;
 
                 for (let step = 0; step < subSteps; step++) {
                     for (let i = 0; i < s.pos.length; i++) {
-                        const x = s.pos[i][0] / scaleFac;
-                        const y = s.pos[i][1] / scaleFac;
-                        const z = (s.pos[i][2] / scaleFac) + 25;
+                        const p = s.pos[i];
+                        const x = p[0] / scaleFac;
+                        const y = p[1] / scaleFac;
+                        const z = (p[2] / scaleFac) + 25;
+
                         const dx = sigma * (y - x);
                         const dy = x * (rho - z) - y;
                         const dz = x * y - beta * z;
-                        const nextX = x + dx * dt;
-                        const nextY = y + dy * dt;
-                        const nextZ = z + dz * dt;
-                        s.pos[i][0] = nextX * scaleFac;
-                        s.pos[i][1] = nextY * scaleFac;
-                        s.pos[i][2] = (nextZ - 25) * scaleFac;
+
+                        p[0] = (x + dx * stepDt) * scaleFac;
+                        p[1] = (y + dy * stepDt) * scaleFac;
+                        p[2] = (z + dz * stepDt - 25) * scaleFac;
                     }
                 }
+
                 for (let i = 0; i < s.pos.length; i++) {
                     s.history[i].push([...s.pos[i]]);
-                    if (s.history[i].length > 800) s.history[i].shift();
+                    if (s.history[i].length > 500) s.history[i].shift();
                 }
             }
 
-            const rotMatrix = (p, t) => {
-                let shift = t / 10000 + followMouse.x / stageR / 50;
-                let pitch = t / 15000 + followMouse.y / stageR / 20;
-                let [x, y, z] = p;
-                const cosS = Math.cos(shift);
-                const sinS = Math.sin(shift);
-                let x1 = x * cosS - z * sinS;
-                let z1 = x * sinS + z * cosS;
-                let y1 = y;
-                const cosP = Math.cos(pitch);
-                const sinP = Math.sin(pitch);
-                let y2 = y1 * cosP - z1 * sinP;
-                let z2 = y1 * sinP + z1 * cosP;
-                let x2 = x1;
-                return [x2, y2, z2];
-            };
-
             function drawAbout(t) {
-                let aboutPos = cardPos['about']
-                // dot(aboutPos.x, aboutPos.y, 0)
-                const scale = 1/300;
+                let aboutPos = cardPos['about'];
+                const scale = 1 / 300;
+
+                // Combine base animation, mouse interaction, and your manual config offsets
+                let angle = t / 20000 + (followMouse.x / stageR / 40) + LORENZ_CONFIG.yawOffset;
+                
+                const cosA = Math.cos(angle);
+                const sinA = Math.sin(angle);
+
+                const cosP = Math.cos(LORENZ_CONFIG.pitchOffset);
+                const sinP = Math.sin(LORENZ_CONFIG.pitchOffset);
+
+                // Helper function to transform any 3D point based on config
+                const transformPoint = (rawPoint) => {
+                    // 1. Map axes based on your config selection
+                    let x = rawPoint[LORENZ_CONFIG.xAxis];
+                    let y = rawPoint[LORENZ_CONFIG.yAxis];
+                    let z = rawPoint[LORENZ_CONFIG.zAxis];
+
+                    // 2. Apply the dynamic yaw (rotation around screen vertical axis)
+                    let rx = x * cosA - z * sinA;
+                    let rz1 = x * sinA + z * cosA;
+
+                    // 3. Apply the manual pitch config (rotation around screen horizontal axis)
+                    let ry = y * cosP - rz1 * sinP;
+                    let rz = y * sinP + rz1 * cosP;
+
+                    return [rx, ry, rz];
+                };
+
                 for (let p of state.pos) {
-                    let r = rotMatrix(p, t)
-                    var x = r[0];
-                    var y = r[1];
-                    var z = r[2];
-                    dot(x / scale + aboutPos.x, y / scale + aboutPos.y, z / scale, false)
+                    let r = transformPoint(p);
+                    dot(r[0] / scale + aboutPos.x, r[1] / scale + aboutPos.y, r[2] / scale, true);
+
                     for (let h of state.history) {
-                        let prev = vec(0, 0)
+                        let prev = vec(0, 0);
                         let i = 0;
                         for (let pp of h) {
                             ctx.beginPath();
-                            i++
-                            let r = rotMatrix(pp, t)
-                            ctx.strokeStyle = `rgba(255, 0, 0, ${Math.min(r[2]/5 + 0.3, 0.5)})`;
-                            var { x, y } = project(r[0] / scale + aboutPos.x, r[1] / scale + aboutPos.y, r[2] / scale, false)
-                            if (i % 125 == 0) dot(r[0] / scale + aboutPos.x, r[1] / scale + aboutPos.y, r[2] / scale, false)
-                            if (prev.x != 0 && prev.y != 0) ctx.moveTo(prev.x + width/2, prev.y + height/2)
+                            i++;
+
+                            let hr = transformPoint(pp);
+
+                            ctx.strokeStyle = `rgba(255, 0, 0, ${Math.min(hr[2] / 5 + 0.3, 0.5)})`;
+                            var { x, y } = project(hr[0] / scale + aboutPos.x, hr[1] / scale + aboutPos.y, hr[2] / scale, true);
+
+                            // if (i % 50 == 10) dot(hr[0] / scale + aboutPos.x, hr[1] / scale + aboutPos.y, hr[2] / scale, true);
+                            if (prev.x != 0 && prev.y != 0) ctx.moveTo(prev.x + width / 2, prev.y + height / 2);
+
                             prev = vec(x, y);
-                            ctx.lineTo(x + width / 2, y + height / 2)
+                            ctx.lineTo(x + width / 2, y + height / 2);
                             ctx.stroke();
                         }
                     }
@@ -1091,7 +1084,7 @@
                 for (let x = -100; x <= 100; x += 20) {
                     dots = []
                     for (let t = 0; t <= 2 * Math.PI; t += Math.PI / 5) {
-                        let r = (x / 10) ** 2
+                        let r = (x / 9) ** 2
                         let dy = r * Math.cos(t + shift)
                         let dz = r * Math.sin(t + shift)
                         dot(lbnlPos.x + x, dy + lbnlPos.y, dz)
@@ -1143,7 +1136,8 @@
                 dots = []
                 dot(nsoPos.x, nsoPos.y, 0);
                 let d = dots[0]
-                for (let boundR = 50; boundR <= 100; boundR += 50) {
+                ctx.strokeStyle = `rgba(255, 0, 0, 0.7)`
+                for (let boundR = 100; boundR <= 150; boundR += 50) {
                     for (let phiOff = 0; phiOff < 2 * Math.PI; phiOff += Math.PI / 5) {
                         ctx.beginPath();
                         for (let theta = 0; theta <= Math.PI; theta += Math.PI / 20) {
@@ -1182,13 +1176,13 @@
                 // }
 
                 let lanlPos = cardPos['lanl']
-                let maxR = 70
-                for (let boundR = 40; boundR <= maxR; boundR += 10) {
+                let maxR = 100
+                for (let boundR = 60; boundR <= maxR; boundR += 15) {
                     let n = 10
                     let mshift = (shift % (2 * Math.PI)) ** 2
                     let phi = 0
                     const sellipse = (theta) => boundR * (Math.abs(Math.cos(theta)) ** n + Math.abs(Math.sin(theta)) ** n) ** (-1 / n)
-                    for (let z = 0; z >= -5; z -= 5) {
+                    for (let z = 25; z >= 15; z -= 10) {
                         ctx.beginPath();
                         for (let theta = 0; theta <= 2 * Math.PI; theta += Math.PI / 50) {
                             let r = sellipse(theta)
@@ -1203,18 +1197,18 @@
                         let theta = shift + i * Math.PI * 2 / ds + (boundR - 50) / 5
                         let r = sellipse(theta)
                         var { x, y, z } = sphToCart(r, theta, phi)
-                        dot(x + lanlPos.x, y + lanlPos.y, z);
+                        dot(x + lanlPos.x, y + lanlPos.y, z + 25);
                     }
                 }
-                for (var startX = -50; startX <= 50; startX += 10) {
+                for (var startX = -60; startX <= 60; startX += 20) {
                     ctx.beginPath();
-                    var { x, y } = project(startX + lanlPos.x, -maxR + lanlPos.y, 0, true)
+                    var { x, y } = project(startX + lanlPos.x, -maxR + lanlPos.y + 10, 25, true)
                     ctx.moveTo(x + width / 2, y + height / 2)
-                    let shiftY = 20 * (Math.sin(startX + shift) + 2)
-                    var { x, y } = project(startX + lanlPos.x, -maxR + lanlPos.y - shiftY, 0, true)
+                    let shiftY = 25 * (Math.sin(startX + shift) + 2)
+                    var { x, y } = project(startX + lanlPos.x, -maxR + lanlPos.y - shiftY, 25, true)
                     ctx.lineTo(x + width / 2, y + height / 2)
                     ctx.stroke();
-                    dot(startX + lanlPos.x, -maxR + lanlPos.y - shiftY, 0)
+                    dot(startX + lanlPos.x, -maxR + lanlPos.y - shiftY, 25)
                 }
             }
 
