@@ -39,21 +39,21 @@
             scroll-behavior: smooth;
         }
 
-        html::-webkit-scrollbar {
+        ::-webkit-scrollbar {
             width: 5px;
         }
 
-        html::-webkit-scrollbar-track {
+        ::-webkit-scrollbar-track {
             background: transparent;
         }
 
-        html::-webkit-scrollbar-thumb {
-            background-color: #ffffffaa;
+        ::-webkit-scrollbar-thumb {
+            background-color: #ffffff44;
             border-radius: 5px;
         }
 
-        html::-webkit-scrollbar-thumb:hover {
-            background-color: #ffffffff;
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: #ffffffaa;
         }
 
         .hero {
@@ -513,10 +513,24 @@
             scroll-snap-type: x mandatory;
             padding: 0 75px;
             scroll-behavior: smooth;
+            padding-bottom: 15px;
         }
 
-        .carousel::-webkit-scrollbar {
-            display: none;
+        .carousel::-webkit-scrollbar:horizontal {
+            /* display: none; */
+            height: 5px;
+        }
+
+        .carousel::-webkit-scrollbar-button:single-button:horizontal:decrement {
+            width: 75px;
+            background: transparent;
+            display: block;
+        }
+
+        .carousel::-webkit-scrollbar-button:single-button:horizontal:increment {
+            width: 75px;
+            background: transparent;
+            display: block;
         }
 
         .carousel-scroll {
@@ -575,10 +589,11 @@
             width: 100%;
             height: 100%;
             background-image: linear-gradient(to bottom,
-                    #000000ee 0%,
+                    #000000ff 0%,
+                    #000000aa 20%,
                     transparent 40%,
                     transparent 60%,
-                    #000000ee 100%);
+                    #000000ff 100%);
             top: 0;
             left: 0;
             z-index: -1;
@@ -714,9 +729,7 @@
                     <p class="card-loc">Saul Perlmutter Group</p>
                 </div>
                 <div class="card-bottom">
-                    <p class="card-description">Multi-GPU Bayesian inference for dark matter distributions and
-                        cosmological parameters
-                        on the PERLMUTTER supercomputer</p>
+                    <p class="card-description">Multi-GPU Bayesian inference for dark matter and cosmological parameters on the PERLMUTTER supercomputer</p>
                 </div><a class="card-link">→</a>
             </div>
             <div class="card research-card" id="card-nso" style="--offset: 0.9;">
@@ -735,22 +748,22 @@
     </div>
     <div class="nohero" style="--pos: 3" id="projects">
         <h1 class="header swap-text" data-label="PROJECTS"><span>PROJECTS</span></h1>
-        <p class="section-description">Some of my published projects</p>
+        <p class="section-description">A collection of published projects</p>
         <div class="carousel-wrapper">
             <!-- <a class="carousel-scroll carousel-scroll-left">←</a>
             <a class="carousel-scroll carousel-scroll-right">→</a> -->
             <div class="carousel">
                 <div class="card project-card" id="card-octos" style="--offset: 1.1">
                     <div class="card-border"></div>
-                    <div class="gradient"></div>
+                    <div class="gradient"></div><img class="card-video" src="app.png" autoplay playsinline muted loop></img>
                     <!-- <video class="card-video" src="https://underpig1.github.io/octos/img/octos-preview.mp4" autoplay
                         playsinline muted loop></video> -->
                     <div class="card-top">
                         <h1 class="card-title">OCTOS DESKTOP</h1>
-                        <p class="card-loc">The open-source HTML dynamic desktop engine</p>
+                        <p class="card-loc">Dynamic desktop engine</p>
                     </div>
                     <div class="card-bottom">
-                        <p class="card-description">Create and share web-based interactive, animated wallpapers on
+                        <p class="card-description">Web-based interactive wallpaper engine for
                             Windows. Available on the Microsoft Store. Featured on Hackaday, ProductHunt, GitHub
                             trending, and more.</p>
                     </div><a class="card-link">→</a>
@@ -761,12 +774,10 @@
                         loop></img>
                     <div class="card-top">
                         <h1 class="card-title">VOCABULUM</h1>
-                        <p class="card-loc">The rapid-fire multiplayer word game with friends</p>
+                        <p class="card-loc">Rapid-fire multiplayer word game</p>
                     </div>
                     <div class="card-bottom">
-                        <p class="card-description">Create and share web-based interactive, animated wallpapers on
-                            Windows. Available on
-                            the Microsoft Store. Featured on Hackaday, ProductHunt, GitHub trending, and more.</p>
+                        <p class="card-description">A lobby-based multiplayer online word game. A challenge in UI/UX and algorithmic design.</p>
                     </div><a class="card-link">→</a>
                 </div>
                 <div class="card project-card" style="--offset: 0.9">
@@ -775,12 +786,10 @@
                     <img class="card-video" src="harp.png" autoplay playsinline muted loop></img>
                     <div class="card-top">
                         <h1 class="card-title">HARPY</h1>
-                        <p class="card-loc">The web-based 3D flight engine</p>
+                        <p class="card-loc">3D flight engine on the web</p>
                     </div>
                     <div class="card-bottom">
-                        <p class="card-description">Create and share web-based interactive, animated wallpapers on
-                            Windows. Available on
-                            the Microsoft Store. Featured on Hackaday, ProductHunt, GitHub trending, and more.</p>
+                        <p class="card-description">An experiment in procedural terrain generation, turned into a multiplayer flight dynamics and exploration game.</p>
                     </div><a class="card-link">→</a>
                 </div>
                 <div class="card project-card">
@@ -789,12 +798,10 @@
                     <img class="card-video" src="mandelbrot.png" autoplay playsinline muted loop></img>
                     <div class="card-top">
                         <h1 class="card-title">MANDELWEB</h1>
-                        <p class="card-loc">64-bit multi-threaded Mandelbrot fractal set viewer</p>
+                        <p class="card-loc">An exploration in high-performance modeling</p>
                     </div>
                     <div class="card-bottom">
-                        <p class="card-description">Create and share web-based interactive, animated wallpapers on
-                            Windows. Available on
-                            the Microsoft Store. Featured on Hackaday, ProductHunt, GitHub trending, and more.</p>
+                        <p class="card-description">64-bit-precision multi-threaded Mandelbrot fractal explorer written in C++, ported to the web with WebAssembly.</p>
                     </div><a class="card-link">→</a>
                 </div>
                 <div class="card project-card">
@@ -803,12 +810,10 @@
                     <img class="card-video" src="giveback.png" autoplay playsinline muted loop></img>
                     <div class="card-top">
                         <h1 class="card-title">GIVEBACK</h1>
-                        <p class="card-loc">64-bit multi-threaded Mandelbrot fractal set viewer</p>
+                        <p class="card-loc">Fighting climate change from home</p>
                     </div>
                     <div class="card-bottom">
-                        <p class="card-description">Create and share web-based interactive, animated wallpapers on
-                            Windows. Available on
-                            the Microsoft Store. Featured on Hackaday, ProductHunt, GitHub trending, and more.</p>
+                        <p class="card-description">A mobile app to incentivize users to fight climate change from home. Recognized by U.S. Congress with a certificate of Special Congressional Recognition.</p>
                     </div><a class="card-link">→</a>
                 </div>
                 <div class="card project-card">
@@ -817,12 +822,10 @@
                     <img class="card-video" src="genn.png" autoplay playsinline muted loop></img>
                     <div class="card-top">
                         <h1 class="card-title">GENN GENOMICS</h1>
-                        <p class="card-loc">64-bit multi-threaded Mandelbrot fractal set viewer</p>
+                        <p class="card-loc">Machine learning suite for genomics</p>
                     </div>
                     <div class="card-bottom">
-                        <p class="card-description">Create and share web-based interactive, animated wallpapers on
-                            Windows. Available on
-                            the Microsoft Store. Featured on Hackaday, ProductHunt, GitHub trending, and more.</p>
+                        <p class="card-description">A neural network framework for genotype-to-phenotype prediction. Created as a John and Violet Kay Research Fellow.</p>
                     </div><a class="card-link">→</a>
                 </div>
                 <div class="card project-card">
@@ -831,12 +834,10 @@
                     <img class="card-video" src="contraption.png" autoplay playsinline muted loop></img>
                     <div class="card-top">
                         <h1 class="card-title">WEB PHYSICS</h1>
-                        <p class="card-loc">64-bit multi-threaded Mandelbrot fractal set viewer</p>
+                        <p class="card-loc">Online 2D physics sandbox</p>
                     </div>
                     <div class="card-bottom">
-                        <p class="card-description">Create and share web-based interactive, animated wallpapers on
-                            Windows. Available on
-                            the Microsoft Store. Featured on Hackaday, ProductHunt, GitHub trending, and more.</p>
+                        <p class="card-description">A playground for building automatic contraptions with joints, motors, and heaps of physics.</p>
                     </div><a class="card-link">→</a>
                 </div>
                 <div class="card project-card">
@@ -845,12 +846,10 @@
                     <img class="card-video" src="pysolrad.png" autoplay playsinline muted loop></img>
                     <div class="card-top">
                         <h1 class="card-title">PYSOLRAD</h1>
-                        <p class="card-loc">64-bit multi-threaded Mandelbrot fractal set viewer</p>
+                        <p class="card-loc">Solar simulations at radio frequencies</p>
                     </div>
                     <div class="card-bottom">
-                        <p class="card-description">Create and share web-based interactive, animated wallpapers on
-                            Windows. Available on
-                            the Microsoft Store. Featured on Hackaday, ProductHunt, GitHub trending, and more.</p>
+                        <p class="card-description">A Python library to simulate particle interactions and radiation mechanisms in the solar corona. Created for the National Solar Observatory.</p>
                     </div><a class="card-link">→</a>
                 </div>
                 <div class="card project-card">
@@ -859,12 +858,10 @@
                     <img class="card-video" src="ntab.png" autoplay playsinline muted loop></img>
                     <div class="card-top">
                         <h1 class="card-title">FMRI IMAGE RECONSTRUCTION</h1>
-                        <p class="card-loc">64-bit multi-threaded Mandelbrot fractal set viewer</p>
+                        <p class="card-loc">Reconstructing images from fMRI brain scans</p>
                     </div>
                     <div class="card-bottom">
-                        <p class="card-description">Create and share web-based interactive, animated wallpapers on
-                            Windows. Available on
-                            the Microsoft Store. Featured on Hackaday, ProductHunt, GitHub trending, and more.</p>
+                        <p class="card-description">Latent diffusion model pipeline for reconstructing visual input from fMRI brain scans. Created as part of Neurotech@Berkeley.</p>
                     </div><a class="card-link">→</a>
                 </div>
             </div>
