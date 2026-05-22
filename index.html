@@ -899,7 +899,7 @@
                 <div class="card project-card" style="--offset: 0.9">
                     <div class="card-border"></div>
                     <div class="gradient"></div>
-                    <img class="card-video" src="img/harp.png" autoplay playsinline muted loop></img>
+                    <img class="card-video" src="img/harpy.png" autoplay playsinline muted loop></img>
                     <div class="card-top">
                         <h1 class="card-title">HARPY</h1>
                         <p class="card-loc">3D flight engine on the web</p>
@@ -1021,6 +1021,26 @@
             const clipZ = -100
             let stageSize = 1;
 
+            const G = 1.0;
+            const m = [1.0, 1.0, 1.0];
+            const z0 = 0.152224534898;
+            const vx = 0.445821334436;
+            const vy = 0.160715316235;
+            const vz = 0.312117562854; // cool with 0.01
+            const LORENZ_CONFIG = {
+                xAxis: 0,
+                yAxis: 1,
+                zAxis: 2,
+                pitchOffset: -Math.PI * 1.55 + 0.2,
+                yawOffset: Math.PI * 1.25 - 0.9
+            };
+            let state = {
+                pos: [[-1.0, 0, -z0 / 3], [1.0, 0, -z0 / 3]],
+                vel: [[vx, vy, vz], [vx, vy, -vz]],
+                history: [[], []]
+            };
+            const INITIAL_STATE = JSON.parse(JSON.stringify(state));
+
             const cursor = document.getElementById('cursor')
 
             Array.from(document.getElementsByClassName('project-card')).forEach((el) => {
@@ -1058,6 +1078,7 @@
                 //     console.log(e)
                 //     e.style.setProperty("--pos", e.getBoundingClientRect().top + scrollY + 'px')
                 // }
+                resetOrbit();
             }
             window.onresize()
             document.onmousemove = document.onmousedown = (e) => {
@@ -1222,13 +1243,6 @@
                 drawProjects(t)
             }
 
-            const G = 1.0;
-            const m = [1.0, 1.0, 1.0];
-            const z0 = 0.152224534898;
-            const vx = 0.445821334436;
-            const vy = 0.160715316235;
-            const vz = 0.312117562854; // cool with 0.01
-
             // const z0 = 0.25387857578;
             // const vx = 0.30855862740;
             // const vy = 0.55506896654;
@@ -1239,13 +1253,6 @@
             // const vy = 0.532728;
             // const vz = 0.153412;
 
-            let state = {
-                pos: [[-1.0, 0, -z0 / 3], [1.0, 0, -z0 / 3]],
-                vel: [[vx, vy, vz], [vx, vy, -vz]],
-                history: [[], []]
-            };
-            const INITIAL_STATE = JSON.parse(JSON.stringify(state));
-
             function resetOrbit() {
                 state.pos = INITIAL_STATE.pos.map(p => [...p]);
                 state.vel = INITIAL_STATE.vel.map(v => [...v]);
@@ -1253,14 +1260,6 @@
                 for (let i = 0; i < 1000; i++)
                     stepPhysics(0.01)
             }
-
-            const LORENZ_CONFIG = {
-                xAxis: 0,
-                yAxis: 1,
-                zAxis: 2,
-                pitchOffset: -Math.PI * 1.55 + 0.2,
-                yawOffset: Math.PI * 1.25 - 0.9
-            };
 
             function stepPhysics(dt) {
                 const stepDt = dt / 5;
