@@ -248,6 +248,15 @@
             overflow-x: hidden;
         }
 
+        .nohero:not(.footer), .carousel-wrapper {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .grid, .carousel-wrapper, .carousel, .about-content {
+            flex: 1;
+        }
+
         .header {
             margin: 0;
             font-weight: bolder;
@@ -618,7 +627,7 @@
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                width: calc(100% - 15px);
+                width: 100%;
             }
 
             .header {
@@ -722,6 +731,12 @@
             /* #menu-toggle:checked ~ .menu-overlay {
                 display: block;
             } */
+        }
+
+        @media screen and (min-width: 1500px) {
+            .project-card {
+                min-width: 800px;
+            }
         }
 
         .scratch {
@@ -1333,6 +1348,7 @@
                 let lbnlPos = cardPos['lbnl']
                 allDots = []
                 let shift = t / 10000 + followMouse.x / stageR / 50;
+                const scaleFac = stageR/300
                 for (let x = -100; x <= 100; x += 20) {
                     dots = []
                     for (let t = 0; t <= 2 * Math.PI; t += Math.PI / 5) {
