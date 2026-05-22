@@ -1039,6 +1039,9 @@
                 canvas.height = height;
 
                 stageR = Math.min(width, height) / 2.2 // was 2
+                if (width < 500) {
+                    stageR += 100
+                }
                 stageSize = Math.min(width, height) / 100
 
                 const scrollX = window.scrollX || document.documentElement.scrollLeft;
@@ -1352,10 +1355,10 @@
                 for (let x = -100; x <= 100; x += 20) {
                     dots = []
                     for (let t = 0; t <= 2 * Math.PI; t += Math.PI / 5) {
-                        let r = (x / 9) ** 2
+                        let r = (x / 9) ** 2* scaleFac
                         let dy = r * Math.cos(t + shift)
                         let dz = r * Math.sin(t + shift)
-                        dot(lbnlPos.x + x, dy + lbnlPos.y, dz)
+                        dot(lbnlPos.x + x* scaleFac, dy + lbnlPos.y, dz)
                     }
                     allDots.push(dots)
                 }
@@ -1410,7 +1413,7 @@
                         ctx.beginPath();
                         for (let theta = 0; theta <= Math.PI; theta += Math.PI / 20) {
                             let fieldR = boundR * Math.sin(theta)
-                            var { x, y, z } = sphToCart(fieldR, theta, shift + phiOff)
+                            var { x, y, z } = sphToCart(fieldR* scaleFac, theta, shift + phiOff)
                             // toDraw.push({x, y, z})
                             var { x, y } = project(x + nsoPos.x, y + nsoPos.y, z, true)
                             ctx.lineTo(x + width / 2, y + height / 2)
@@ -1419,7 +1422,7 @@
 
                         let theta = shift + phiOff
                         let fieldR = boundR * Math.sin(theta)
-                        var { x, y, z } = sphToCart(fieldR, theta, shift + phiOff)
+                        var { x, y, z } = sphToCart(fieldR* scaleFac, theta, shift + phiOff)
                         dot(x + nsoPos.x, y + nsoPos.y, z);
                     }
                 }
@@ -1444,7 +1447,7 @@
                 // }
 
                 let lanlPos = cardPos['lanl']
-                let maxR = 100
+                let maxR = 90
                 for (let boundR = 60; boundR <= maxR; boundR += 15) {
                     let n = 10
                     let mshift = (shift % (2 * Math.PI)) ** 2
@@ -1453,7 +1456,7 @@
                     for (let z = 25; z >= 15; z -= 10) {
                         ctx.beginPath();
                         for (let theta = 0; theta <= 2 * Math.PI; theta += Math.PI / 50) {
-                            let r = sellipse(theta)
+                            let r = sellipse(theta)*scaleFac
                             var { x, y, _ } = sphToCart(r, theta, phi)
                             var { x, y } = project(x + lanlPos.x, y + lanlPos.y, z, true)
                             ctx.lineTo(x + width / 2, y + height / 2)
@@ -1463,20 +1466,20 @@
                     let ds = 5
                     for (let i = 0; i < ds; i++) {
                         let theta = shift + i * Math.PI * 2 / ds + (boundR - 50) / 5
-                        let r = sellipse(theta)
+                        let r = sellipse(theta)*scaleFac
                         var { x, y, z } = sphToCart(r, theta, phi)
                         dot(x + lanlPos.x, y + lanlPos.y, z + 25);
                     }
                 }
                 for (var startX = -60; startX <= 60; startX += 20) {
                     ctx.beginPath();
-                    var { x, y } = project(startX + lanlPos.x, -maxR + lanlPos.y + 10, 25, true)
+                    var { x, y } = project(startX* scaleFac + lanlPos.x, -maxR*scaleFac + lanlPos.y, 25, true)
                     ctx.moveTo(x + width / 2, y + height / 2)
-                    let shiftY = 25 * (Math.sin(startX + shift) + 2)
-                    var { x, y } = project(startX + lanlPos.x, -maxR + lanlPos.y - shiftY, 25, true)
+                    let shiftY = 25 * (Math.sin(startX* scaleFac + shift) + 2)* scaleFac
+                    var { x, y } = project(startX* scaleFac + lanlPos.x, -maxR*scaleFac + lanlPos.y - shiftY, 25, true)
                     ctx.lineTo(x + width / 2, y + height / 2)
                     ctx.stroke();
-                    dot(startX + lanlPos.x, -maxR + lanlPos.y - shiftY, 25)
+                    dot(startX* scaleFac + lanlPos.x, -maxR*scaleFac + lanlPos.y - shiftY, 25)
                 }
             }
 
