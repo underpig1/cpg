@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Geist+Mono:ital,wght@0,100..900;1,100..900&family=Geist:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
         rel="stylesheet">
     <script defer src="https://cloud.umami.is/script.js" data-website-id="cf60cc60-3e7d-4baa-b08e-3f32de274515"></script>
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
@@ -24,11 +24,12 @@
             --color: #fff;
             --background: #000000;
             --scroll: 0px;
+            --subheader: #a6a6a6;
             font-size: 14pt;
             /* font-style: italic; */
             font-weight: 500;
-            font-family: 'Georgia', 'Times New Roman', Times, serif;
-            font-family: 'Inter', monospace;
+            /* font-family: 'Georgia', 'Times New Roman', Times, serif; */
+            font-family: 'Geist', 'Inter', monospace;
         }
 
         html,
@@ -95,7 +96,8 @@
         }
 
         .navbar.active {
-            background-color: black;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(2px);
         }
 
         .navbar.active::after {
@@ -201,11 +203,11 @@
             background-color: var(--color);
             position: absolute;
             display: block;
-            top: 100%;
+            top: 101%;
             z-index: -1;
             left: -5px;
             right: -5px;
-            transition: top 0.4s ease;
+            transition: top 0.5s ease;
             user-select: none;
         }
 
@@ -215,13 +217,13 @@
             position: absolute;
             display: block;
             top: 100%;
-            transition: top 0.4s ease;
+            transition: top 0.5s ease;
         }
 
         .swap-text span {
             position: relative;
             top: 0;
-            transition: top 0.4s ease;
+            transition: top 0.5s ease;
             z-index: -1;
             background-color: var(--background);
         }
@@ -290,6 +292,7 @@
             transform: translate(-50%, -50%);
             left: 50%;
             width: max-content;
+            height: auto;
             flex-direction: column;
             align-items: center;
             gap: 5px;
@@ -305,8 +308,9 @@
             font-size: clamp(24pt, 10vw, 64pt);
             margin: 0;
             font-weight: 900;
+            transform: translateY(0);
             color: var(--color);
-            transition: top 0.4s ease;
+            transition: transform 0.5s ease;
             top: 0;
             user-select: none;
         }
@@ -321,6 +325,8 @@
             color: var(--color);
             margin: 0;
             font-weight: 500;
+            color: var(--subheader);
+            font-family: 'Geist Mono', monospace;
         }
 
         .knockout {
@@ -329,7 +335,7 @@
             background-color: white;
             padding: 0px 20px;
             top: -101%;
-            transition: top 0.4s ease;
+            transition: top 0.5s ease;
         }
 
         .name.active .knockout {
@@ -337,7 +343,7 @@
         }
 
         .name.active>h1 {
-            top: 64pt;
+            transform: translateY(100%);
         }
 
         .knockout h1 {
@@ -405,11 +411,12 @@
         }
 
         .card-loc {
-            color: gray;
+            color: var(--subheader);
             font-size: 12pt;
             /* font-family: 'Roboto Mono'; */
             font-weight: 400;
             margin: auto;
+            /* font-family: 'Geist Mono', monospace; */
         }
 
         .card-description {
@@ -477,7 +484,7 @@
             /* transform: translateY(calc(0px - (var(--scroll) - var(--pos)*100vh)*0.2)); */
         }
 
-        .about-text span {
+        .text-highlight {
             background: white;
             color: black;
             /* font-family: 'Roboto Mono'; */
@@ -503,7 +510,8 @@
             font-size: 12pt;
             font-weight: 400;
             margin-top: 20px;
-            color: gray;
+            color: var(--subheader);
+            font-family: 'Geist Mono', monospace;
             /* font-family: 'Roboto Mono'; */
         }
 
@@ -741,7 +749,7 @@
         }
 
         .scratch {
-            color: gray;
+            color: var(--subheader);
             font-size: 10pt;
             text-decoration: underline;
             margin-top: 5px;
@@ -766,6 +774,21 @@
         }
 
         .scratch:hover .tooltip {
+            opacity: 1;
+        }
+
+        .reveal, .reveal-line {
+            display: block;
+            position: relative;
+            opacity: 0;
+            transform: translateY(100%);
+            clip-path: polygon(0% -100%, 100% -100%, 100% 0%, 0% 0%);
+            transition: clip-path 0.5s ease, transform 0.5s ease, opacity 0.5s ease;
+        }
+
+        .reveal.active, .reveal-text.active .reveal-line {
+            transform: translateY(0%);
+            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
             opacity: 1;
         }
     </style>
@@ -804,11 +827,11 @@
     </div>
     <div class="nohero" style="--pos: 1" id="about">
         <h1 class="header swap-text" data-label="ABOUT"><span>ABOUT</span></h1>
-        <p class="section-description">Me and my work</p>
+        <p class="section-description reveal">ME AND MY WORK</p>
         <div class="about-content">
             <div class="about-text">
                 <!-- <h1>hi there!</h1> -->
-                <p>I study <span>Physics</span> and <span>Data Science</span> at <span>UC Berkeley</span>. I currently
+                <p class="reveal-text">I study <span class="text-highlight">Physics</span> and <span class="text-highlight">Data Science</span> at <span class="text-highlight">UC Berkeley</span>. I currently
                     do research in computational physics at
                     the Lawrence Berkeley National Lab. I am primarily interested in physics research, especially in
                     astrophysics and space sciences. I also do full-stack web development, and I occasionally publish
@@ -824,7 +847,7 @@
     </div>
     <div class="nohero" style="--pos: 2" id="research">
         <h1 class="header swap-text" data-label="RESEARCH"><span>RESEARCH</span></h1>
-        <p class="section-description">My recent research work in physics and related fields</p>
+        <p class="section-description reveal">MY RESEARCH WORK IN PHYSICS</p>
         <div class="grid">
             <div class="card research-card" id="card-lanl" style="--offset: 1.1;">
                 <div class="card-border"></div>
@@ -834,7 +857,7 @@
                     <p class="card-loc">X Computational Physics Division</p>
                 </div>
                 <div class="card-bottom">
-                    <p class="card-description">Developing exascale multiphysics particle-in-cell plasma simulations on high-performance computing clusters</p>
+                    <p class="card-description reveal-text">Developing exascale multiphysics particle-in-cell plasma simulations on high-performance computing clusters</p>
                 </div>
                 <a class="card-link">→</a>
             </div>
@@ -846,7 +869,7 @@
                     <p class="card-loc">Prof. Saul Perlmutter Group</p>
                 </div>
                 <div class="card-bottom">
-                    <p class="card-description">Constraining cosmological parameters via Bayesian inference of strong gravitational lensing systems on the PERLMUTTER supercomputer</p>
+                    <p class="card-description reveal-text">Constraining cosmological parameters via Bayesian inference of strong gravitational lensing systems on the PERLMUTTER supercomputer</p>
                 </div>
                 <a class="card-link">→</a>
             </div>
@@ -858,7 +881,7 @@
                     <p class="card-loc">Daniel K. Inouye Solar Telescope</p>
                 </div>
                 <div class="card-bottom">
-                    <p class="card-description">Magnetic field inference via simulation of radio emission through
+                    <p class="card-description reveal-text">Magnetic field inference via simulation of radio emission through
                         magnetohydrodynamic models of the solar atmosphere</p>
                 </div><a class="card-link"  target="_blank" rel="noopener noreferrer" href="https://github.com/underpig1/pysolrad">→</a>
             </div>
@@ -866,7 +889,7 @@
     </div>
     <div class="nohero" style="--pos: 3" id="projects">
         <h1 class="header swap-text" data-label="PROJECTS"><span>PROJECTS</span></h1>
-        <p class="section-description">A collection of released projects</p>
+        <p class="section-description reveal">A COLLECTION OF PERSONAL PROJECTS</p>
         <div class="carousel-wrapper">
             <!-- <a class="carousel-scroll carousel-scroll-left">←</a>
             <a class="carousel-scroll carousel-scroll-right">→</a> -->
@@ -881,7 +904,7 @@
                         <p class="card-loc">Dynamic desktop engine</p>
                     </div>
                     <div class="card-bottom">
-                        <p class="card-description">Web-based interactive wallpaper engine for
+                        <p class="card-description reveal-text">Web-based interactive wallpaper engine for
                             Windows. Available on the Microsoft Store. Featured on Hackaday, ProductHunt, GitHub
                             trending, and more.</p>
                     </div><a class="card-link"  target="_blank" rel="noopener noreferrer" href="https://underpig1.github.io/octos/">→</a>
@@ -895,7 +918,7 @@
                         <p class="card-loc">Rapid-fire multiplayer word game</p>
                     </div>
                     <div class="card-bottom">
-                        <p class="card-description">A lobby-based multiplayer online word game. A challenge in UI/UX and algorithmic design.</p>
+                        <p class="card-description reveal-text">A lobby-based multiplayer online word game. A challenge in UI/UX and algorithmic design.</p>
                     </div><a class="card-link"  target="_blank" rel="noopener noreferrer" href="https://underpig1.github.io/vocabulum/web/index.html">→</a>
                 </div>
                 <div class="card project-card" style="--offset: 0.9">
@@ -907,7 +930,7 @@
                         <p class="card-loc">3D flight engine on the web</p>
                     </div>
                     <div class="card-bottom">
-                        <p class="card-description">An experiment in procedural terrain generation, turned into a multiplayer flight dynamics and exploration game.</p>
+                        <p class="card-description reveal-text">An experiment in procedural terrain generation, turned into a multiplayer flight dynamics and exploration game.</p>
                     </div><a class="card-link"  target="_blank" rel="noopener noreferrer" href="https://github.com/underpig1/harpy">→</a>
                 </div>
                 <div class="card project-card">
@@ -919,7 +942,7 @@
                         <p class="card-loc">An exploration in high-performance modeling</p>
                     </div>
                     <div class="card-bottom">
-                        <p class="card-description">64-bit-precision multi-threaded Mandelbrot fractal explorer written in C++, ported to the web with WebAssembly.</p>
+                        <p class="card-description reveal-text">64-bit-precision multi-threaded Mandelbrot fractal explorer written in C++, ported to the web with WebAssembly.</p>
                     </div><a class="card-link" target="_blank" rel="noopener noreferrer" href="https://underpig1.github.io/octos-community/src/fractal/index.html">→</a>
                 </div>
                 <div class="card project-card">
@@ -931,7 +954,7 @@
                         <p class="card-loc">Fighting climate change from home</p>
                     </div>
                     <div class="card-bottom">
-                        <p class="card-description">A mobile app to incentivize users to fight climate change from home. Recognized by U.S. Congress with a certificate of Special Congressional Recognition.</p>
+                        <p class="card-description reveal-text">A mobile app to incentivize users to fight climate change from home. Recognized by U.S. Congress with a certificate of Special Congressional Recognition.</p>
                     </div><a class="card-link" target="_blank" rel="noopener noreferrer" href="https://github.com/underpig1/gbhi">→</a>
                 </div>
                 <div class="card project-card">
@@ -943,7 +966,7 @@
                         <p class="card-loc">Machine learning suite for genomics</p>
                     </div>
                     <div class="card-bottom">
-                        <p class="card-description">A neural network framework for genotype-to-phenotype prediction. Created as a John and Violet Kay Research Fellow.</p>
+                        <p class="card-description reveal-text">A neural network framework for genotype-to-phenotype prediction. Created as a John and Violet Kay Research Fellow.</p>
                     </div><a class="card-link" target="_blank" rel="noopener noreferrer" href="https://github.com/cpg2401/genominator">→</a>
                 </div>
                 <div class="card project-card">
@@ -955,7 +978,7 @@
                         <p class="card-loc">Online 2D physics sandbox</p>
                     </div>
                     <div class="card-bottom">
-                        <p class="card-description">A playground for building automatic contraptions with joints, motors, and heaps of physics.</p>
+                        <p class="card-description reveal-text">A playground for building automatic contraptions with joints, motors, and heaps of physics.</p>
                     </div><a class="card-link" target="_blank" rel="noopener noreferrer" href="https://underpig1.github.io/octos-community/src/contraption/">→</a>
                 </div>
                 <div class="card project-card">
@@ -967,7 +990,7 @@
                         <p class="card-loc">Solar simulations at radio frequencies</p>
                     </div>
                     <div class="card-bottom">
-                        <p class="card-description">A Python library to simulate particle interactions and radiation mechanisms in the solar corona. Created for the National Solar Observatory.</p>
+                        <p class="card-description reveal-text">A Python library to simulate particle interactions and radiation mechanisms in the solar corona. Created for the National Solar Observatory.</p>
                     </div><a class="card-link" target="_blank" rel="noopener noreferrer" href="https://github.com/underpig1/pysolrad">→</a>
                 </div>
                 <div class="card project-card">
@@ -979,7 +1002,7 @@
                         <p class="card-loc">Reconstructing images from fMRI brain scans</p>
                     </div>
                     <div class="card-bottom">
-                        <p class="card-description">Latent diffusion model pipeline for reconstructing visual input from fMRI brain scans. Created as part of Neurotech@Berkeley.</p>
+                        <p class="card-description reveal-text">Latent diffusion model pipeline for reconstructing visual input from fMRI brain scans. Created as part of Neurotech@Berkeley.</p>
                     </div><a class="card-link" target="_blank" rel="noopener noreferrer" href="https://github.com/underpig1/ntab-fmri-reconstruction">→</a>
                 </div>
             </div>
@@ -999,7 +1022,126 @@
         </div>
     </div>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+    function initTextReveal(container) {
+        let updating = false;
+
+        function unwrapLines() {
+            container.querySelectorAll('.reveal-line').forEach(line => {
+                line.replaceWith(...line.childNodes);
+            });
+        }
+
+        function getTextNodes(root) {
+            const walker = document.createTreeWalker(
+                root,
+                NodeFilter.SHOW_TEXT
+            );
+
+            const nodes = [];
+            let node;
+
+            while ((node = walker.nextNode())) {
+                nodes.push(node);
+            }
+
+            return nodes;
+        }
+
+        function getLines(nodes) {
+            const lines = [];
+            let current;
+
+            for (const node of nodes) {
+                for (let i = 0; i < node.length; i++) {
+                    const range = document.createRange();
+
+                    range.setStart(node, i);
+                    range.setEnd(node, i + 1);
+
+                    const rect = range.getBoundingClientRect();
+
+                    if (!rect.width && !rect.height) continue;
+
+                    const top = Math.round(rect.top);
+
+                    if (!current || Math.abs(current.top - top) > 1) {
+                        current = {
+                            top,
+                            startNode: node,
+                            startOffset: i,
+                            endNode: node,
+                            endOffset: i + 1
+                        };
+
+                        lines.push(current);
+                    } else {
+                        current.endNode = node;
+                        current.endOffset = i + 1;
+                    }
+                }
+            }
+
+            return lines;
+        }
+
+        function cleanup(root) {
+            [...root.querySelectorAll('*')]
+                .reverse()
+                .forEach(element => {
+                    if (element === container) return;
+
+                    if (!element.textContent.trim()) {
+                        element.replaceWith(...element.childNodes);
+                    }
+                });
+        }
+
+        function update() {
+            if (updating) return;
+
+            updating = true;
+            container.style.visibility = 'hidden';
+
+            unwrapLines();
+            void container.offsetHeight;
+
+            const lines = getLines(getTextNodes(container));
+
+            for (let i = lines.length - 1; i >= 0; i--) {
+                const line = lines[i];
+
+                const range = document.createRange();
+
+                range.setStart(line.startNode, line.startOffset);
+                range.setEnd(line.endNode, line.endOffset);
+
+                const wrapper = document.createElement('span');
+
+                wrapper.className = 'reveal-line';
+                wrapper.style.transitionDelay = `${i * 0.05}s`;
+
+                wrapper.appendChild(range.extractContents());
+                range.insertNode(wrapper);
+            }
+
+            cleanup(container);
+
+            container.style.visibility = '';
+            updating = false;
+        }
+
+        const observer = new ResizeObserver(update);
+
+        observer.observe(container);
+        update();
+
+        return () => {
+            observer.disconnect();
+            unwrapLines();
+            cleanup(container);
+        };
+    }
+            document.addEventListener('DOMContentLoaded', () => {
             const canvas = document.getElementById('canvas')
             const ctx = canvas.getContext('2d');
             let width = window.innerWidth;
@@ -1052,6 +1194,10 @@
                         left: el.offsetLeft - parent.clientWidth / 2 + el.clientWidth / 2
                     });
                 })
+            })
+
+            Array.from(document.getElementsByClassName('reveal-text')).forEach((el) => {
+                initTextReveal(el);
             })
 
             window.onresize = () => {
@@ -1115,7 +1261,7 @@
                 mouse.y = touch.clientY - height / 2
             }
             window.onscrollstart = window.onscrollend = window.onscroll = (e) => {
-                document.querySelectorAll('.name, .swap-text').forEach(element => {
+                document.querySelectorAll('.name').forEach(element => {
                     let pos = parseInt(getComputedStyle(element).getPropertyValue('--pos'));
                     // if (pos == null) return;
                     let cond = scrollTop >= (pos - 0.25) * window.innerHeight// && scrollTop <= (pos + 0.5) * window.innerHeight;
@@ -1125,8 +1271,17 @@
                     else
                         element.classList.remove('active')
                 });
+                document.querySelectorAll('.reveal-text, .reveal, .swap-text').forEach(element => {
+                    let y = element.getBoundingClientRect().top;
+                    let onCond = y > 0 && y < window.innerHeight - 100
+                    let offCond = y > 0 && y < window.innerHeight
+                    if (onCond)
+                        element.classList.add('active')
+                    else if (element.classList.contains('active') && offCond)
+                        element.classList.remove('active')
+                });
                 scrollTop = window.scrollY
-                if (scrollTop > window.innerHeight) {
+                if (scrollTop > window.innerHeight - 50) {
                     document.querySelector('.navbar').classList.add('active');
                 }
                 else {
