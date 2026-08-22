@@ -1158,7 +1158,7 @@
                     const wrapper = document.createElement('span');
 
                     wrapper.className = 'reveal-line';
-                    wrapper.style.transitionDelay = `${i * 0.05}s`;
+                    wrapper.style.transitionDelay = `${i * 0.075}s`;
 
                     wrapper.appendChild(range.extractContents());
                     range.insertNode(wrapper);
@@ -1321,7 +1321,18 @@
                     if (!element.classList.contains('active') && onCond)
                         element.classList.add('active')
                     else if (element.classList.contains('active') && offCond)
+                    {
+                        for (const child of element.querySelectorAll('.reveal-line')) {
+                            const cached = child.style.transition
+                            const cachedDelay = child.style.transitionDelay
+                            child.style.transition = 'none'
+                            requestAnimationFrame(() => {
+                                child.style.transition = cached;
+                                child.style.transitionDelay = cachedDelay;
+                            });
+                        }
                         element.classList.remove('active')
+                    }
                 });
                 if (scrollTop > window.innerHeight - 50) {
                     document.querySelector('.navbar').classList.add('active');
