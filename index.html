@@ -1315,10 +1315,10 @@
                         element.classList.remove('active')
                 });
                 document.querySelectorAll('.reveal-text, .reveal, .swap-text').forEach(element => {
-                    let y = element.getBoundingClientRect().top;
-                    let onCond = y > 0 && y < window.innerHeight - 100
-                    let offCond = y > 0 && y < window.innerHeight
-                    if (onCond)
+                    const rect = element.getBoundingClientRect();
+                    let onCond = rect.bottom < window.innerHeight
+                    let offCond = rect.top > window.innerHeight
+                    if (!element.classList.contains('active') && onCond)
                         element.classList.add('active')
                     else if (element.classList.contains('active') && offCond)
                         element.classList.remove('active')
@@ -1728,24 +1728,24 @@
             let lastTime = 0;
             resetOrbit();
             function update(time) {
-                // if (time - lastTime >= 1000/60) {
-                const dt = time - lastTime
-                // scrollTop = window.scrollY
-                try {
-                    draw(time);
-                }
-                catch { }
-                lastTime = time;
-                followMouse.x += mouse.x
-                followMouse.y += mouse.y
-                followMouse.x *= 0.95;
-                followMouse.y *= 0.95;
+                if (time - lastTime >= 1000/60) {
+                    const dt = time - lastTime
+                    // scrollTop = window.scrollY
+                    try {
+                        draw(time);
+                    }
+                    catch { }
+                    lastTime = time;
+                    followMouse.x += mouse.x
+                    followMouse.y += mouse.y
+                    followMouse.x *= 0.95;
+                    followMouse.y *= 0.95;
 
-                cursorPos.x += (mouse.x - cursorPos.x) * 0.2
-                cursorPos.y += (mouse.y - cursorPos.y) * 0.2
-                updateCursor()
-                if (isVisible['about']) stepPhysics(0.01)
-                // }
+                    cursorPos.x += (mouse.x - cursorPos.x) * 0.2
+                    cursorPos.y += (mouse.y - cursorPos.y) * 0.2
+                    updateCursor()
+                    if (isVisible['about']) stepPhysics(0.01)
+                }
                 requestAnimationFrame(update);
             }
             requestAnimationFrame(update);
