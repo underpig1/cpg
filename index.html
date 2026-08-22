@@ -207,11 +207,12 @@
             background-color: var(--color);
             position: absolute;
             display: block;
-            top: 101%;
+            transform: translateY(101%);
             z-index: -1;
             left: -5px;
             right: -5px;
-            transition: top 0.5s ease;
+            top: 0;
+            transition: transform 0.5s ease;
             user-select: none;
         }
 
@@ -220,28 +221,30 @@
             color: var(--background);
             position: absolute;
             display: block;
-            top: 100%;
-            transition: top 0.5s ease;
+            top: 0;
+            transform: translateY(100%);
+            transition: transform 0.5s ease;
         }
 
         .swap-text span {
             position: relative;
-            top: 0;
-            transition: top 0.5s ease;
+            display: block;
+            transform: translateY(0);
+            transition: transform 0.5s ease;
             z-index: -1;
             background-color: var(--background);
         }
 
         .swap-text.active::after {
-            top: 0;
+            transform: translateY(0);
         }
 
         .swap-text.active span {
-            top: -50px;
+            transform: translateY(-50px);
         }
 
         .swap-text.active::before {
-            top: 0;
+            transform: translateY(0);
         }
 
         .nohero {
@@ -342,12 +345,12 @@
             mix-blend-mode: lighten;
             background-color: white;
             padding: 0px 20px;
-            top: -101%;
-            transition: top 0.5s ease;
+            transform: translateY(-101%);
+            transition: transform 0.5s ease;
         }
 
         .name.active .knockout {
-            top: 0;
+            transform: translateY(0);
         }
 
         .name.active>h1 {
@@ -1304,12 +1307,9 @@
                 mouse.y = touch.clientY - height / 2
             }
             window.onscrollstart = window.onscrollend = window.onscroll = (e) => {
+                scrollTop = window.scrollY
                 document.querySelectorAll('.name').forEach(element => {
-                    let pos = parseInt(getComputedStyle(element).getPropertyValue('--pos'));
-                    // if (pos == null) return;
-                    let cond = scrollTop >= (pos - 0.25) * window.innerHeight// && scrollTop <= (pos + 0.5) * window.innerHeight;
-                    if (pos == 0) cond = scrollTop <= 20
-                    if (cond)
+                    if (scrollTop == 0)
                         element.classList.add('active')
                     else
                         element.classList.remove('active')
@@ -1323,7 +1323,6 @@
                     else if (element.classList.contains('active') && offCond)
                         element.classList.remove('active')
                 });
-                scrollTop = window.scrollY
                 if (scrollTop > window.innerHeight - 50) {
                     document.querySelector('.navbar').classList.add('active');
                 }
