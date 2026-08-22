@@ -10,7 +10,8 @@
     <link
         href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Geist+Mono:ital,wght@0,100..900;1,100..900&family=Geist:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
         rel="stylesheet">
-    <script defer src="https://cloud.umami.is/script.js" data-website-id="cf60cc60-3e7d-4baa-b08e-3f32de274515"></script>
+    <script defer src="https://cloud.umami.is/script.js"
+        data-website-id="cf60cc60-3e7d-4baa-b08e-3f32de274515"></script>
     <link rel="icon" href="./favicon.ico" type="image/x-icon">
     <style>
         * {
@@ -62,13 +63,16 @@
         .hero {
             width: 100%;
             height: 100svh;
+            position: relative;
         }
 
-        #canvas {
-            position: fixed;
+        .bg-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            height: 100svh;
-            /* transform: translateY(calc(var(--scroll)/5)) */
+            height: 100%;
+            pointer-events: none;
         }
 
         .navbar {
@@ -251,12 +255,16 @@
             overflow-x: hidden;
         }
 
-        .nohero:not(.footer), .carousel-wrapper {
+        .nohero:not(.footer),
+        .carousel-wrapper {
             display: flex;
             flex-direction: column;
         }
 
-        .grid, .carousel-wrapper, .carousel, .about-content {
+        .grid,
+        .carousel-wrapper,
+        .carousel,
+        .about-content {
             flex: 1;
         }
 
@@ -726,13 +734,13 @@
                 pointer-events: none;
             }
 
-            .navbar.active > .navlinks {
+            .navbar.active>.navlinks {
                 background-color: black;
                 border-left: 1px solid gray;
                 border-bottom: 1px solid gray;
             }
 
-            #menu-toggle:checked ~ .navlinks {
+            #menu-toggle:checked~.navlinks {
                 display: flex;
                 opacity: 1;
             }
@@ -777,7 +785,8 @@
             opacity: 1;
         }
 
-        .reveal, .reveal-line {
+        .reveal,
+        .reveal-line {
             display: block;
             position: relative;
             opacity: 0;
@@ -786,7 +795,8 @@
             transition: clip-path 0.5s ease, transform 0.5s ease, opacity 0.5s ease;
         }
 
-        .reveal.active, .reveal-text.active .reveal-line {
+        .reveal.active,
+        .reveal-text.active .reveal-line {
             transform: translateY(0%);
             clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
             opacity: 1;
@@ -811,7 +821,7 @@
         </div>
     </div>
     <div class="hero" style="--pos: 0" id="hero">
-        <canvas id="canvas"></canvas>
+        <canvas id="canvas-hero" class="bg-canvas"></canvas>
         <!-- <div class="label">
             <p>Physics + Data Science @ UC Berkeley</p>
             <p>Computational Physics @ LANL</p>
@@ -826,12 +836,15 @@
         <p class="description">COMPUTATIONAL PHYSICS</p>
     </div>
     <div class="nohero" style="--pos: 1" id="about">
+        <canvas id="canvas-about" class="bg-canvas"></canvas>
         <h1 class="header swap-text" data-label="ABOUT"><span>ABOUT</span></h1>
         <p class="section-description reveal">ME AND MY WORK</p>
         <div class="about-content">
             <div class="about-text">
                 <!-- <h1>hi there!</h1> -->
-                <p class="reveal-text">I study <span class="text-highlight">Physics</span> and <span class="text-highlight">Data Science</span> at <span class="text-highlight">UC Berkeley</span>. I currently
+                <p class="reveal-text">I study <span class="text-highlight">Physics</span> and <span
+                        class="text-highlight">Data Science</span> at <span class="text-highlight">UC Berkeley</span>. I
+                    currently
                     do research in computational physics at
                     the Lawrence Berkeley National Lab. I am primarily interested in physics research, especially in
                     astrophysics and space sciences. I also do full-stack web development, and I occasionally publish
@@ -846,6 +859,7 @@
         </div>
     </div>
     <div class="nohero" style="--pos: 2" id="research">
+        <canvas id="canvas-research" class="bg-canvas"></canvas>
         <h1 class="header swap-text" data-label="RESEARCH"><span>RESEARCH</span></h1>
         <p class="section-description reveal">MY RESEARCH WORK IN PHYSICS</p>
         <div class="grid">
@@ -857,7 +871,8 @@
                     <p class="card-loc">X Computational Physics Division</p>
                 </div>
                 <div class="card-bottom">
-                    <p class="card-description reveal-text">Developing exascale multiphysics particle-in-cell plasma simulations on high-performance computing clusters</p>
+                    <p class="card-description reveal-text">Developing exascale multiphysics particle-in-cell plasma
+                        simulations on high-performance computing clusters</p>
                 </div>
                 <a class="card-link">→</a>
             </div>
@@ -869,7 +884,8 @@
                     <p class="card-loc">Prof. Saul Perlmutter Group</p>
                 </div>
                 <div class="card-bottom">
-                    <p class="card-description reveal-text">Constraining cosmological parameters via Bayesian inference of strong gravitational lensing systems on the PERLMUTTER supercomputer</p>
+                    <p class="card-description reveal-text">Constraining cosmological parameters via Bayesian inference
+                        of strong gravitational lensing systems on the PERLMUTTER supercomputer</p>
                 </div>
                 <a class="card-link">→</a>
             </div>
@@ -881,9 +897,11 @@
                     <p class="card-loc">Daniel K. Inouye Solar Telescope</p>
                 </div>
                 <div class="card-bottom">
-                    <p class="card-description reveal-text">Magnetic field inference via simulation of radio emission through
+                    <p class="card-description reveal-text">Magnetic field inference via simulation of radio emission
+                        through
                         magnetohydrodynamic models of the solar atmosphere</p>
-                </div><a class="card-link"  target="_blank" rel="noopener noreferrer" href="https://github.com/underpig1/pysolrad">→</a>
+                </div><a class="card-link" target="_blank" rel="noopener noreferrer"
+                    href="https://github.com/underpig1/pysolrad">→</a>
             </div>
         </div>
     </div>
@@ -896,7 +914,8 @@
             <div class="carousel">
                 <div class="card project-card" id="card-octos" style="--offset: 1.1">
                     <div class="card-border"></div>
-                    <div class="gradient"></div><img class="card-video" src="img/app.png" autoplay playsinline muted loop></img>
+                    <div class="gradient"></div><img class="card-video" src="img/app.png" autoplay playsinline muted
+                        loop></img>
                     <!-- <video class="card-video" src="https://underpig1.github.io/octos/img/octos-preview.mp4" autoplay
                         playsinline muted loop></video> -->
                     <div class="card-top">
@@ -907,7 +926,8 @@
                         <p class="card-description reveal-text">Web-based interactive wallpaper engine for
                             Windows. Available on the Microsoft Store. Featured on Hackaday, ProductHunt, GitHub
                             trending, and more.</p>
-                    </div><a class="card-link"  target="_blank" rel="noopener noreferrer" href="https://underpig1.github.io/octos/">→</a>
+                    </div><a class="card-link" target="_blank" rel="noopener noreferrer"
+                        href="https://underpig1.github.io/octos/">→</a>
                 </div>
                 <div class="card project-card" style="--offset: 1.0">
                     <div class="card-border"></div>
@@ -918,8 +938,10 @@
                         <p class="card-loc">Rapid-fire multiplayer word game</p>
                     </div>
                     <div class="card-bottom">
-                        <p class="card-description reveal-text">A lobby-based multiplayer online word game. A challenge in UI/UX and algorithmic design.</p>
-                    </div><a class="card-link"  target="_blank" rel="noopener noreferrer" href="https://underpig1.github.io/vocabulum/web/index.html">→</a>
+                        <p class="card-description reveal-text">A lobby-based multiplayer online word game. A challenge
+                            in UI/UX and algorithmic design.</p>
+                    </div><a class="card-link" target="_blank" rel="noopener noreferrer"
+                        href="https://underpig1.github.io/vocabulum/web/index.html">→</a>
                 </div>
                 <div class="card project-card" style="--offset: 0.9">
                     <div class="card-border"></div>
@@ -930,8 +952,10 @@
                         <p class="card-loc">3D flight engine on the web</p>
                     </div>
                     <div class="card-bottom">
-                        <p class="card-description reveal-text">An experiment in procedural terrain generation, turned into a multiplayer flight dynamics and exploration game.</p>
-                    </div><a class="card-link"  target="_blank" rel="noopener noreferrer" href="https://github.com/underpig1/harpy">→</a>
+                        <p class="card-description reveal-text">An experiment in procedural terrain generation, turned
+                            into a multiplayer flight dynamics and exploration game.</p>
+                    </div><a class="card-link" target="_blank" rel="noopener noreferrer"
+                        href="https://github.com/underpig1/harpy">→</a>
                 </div>
                 <div class="card project-card">
                     <div class="card-border"></div>
@@ -942,8 +966,10 @@
                         <p class="card-loc">An exploration in high-performance modeling</p>
                     </div>
                     <div class="card-bottom">
-                        <p class="card-description reveal-text">64-bit-precision multi-threaded Mandelbrot fractal explorer written in C++, ported to the web with WebAssembly.</p>
-                    </div><a class="card-link" target="_blank" rel="noopener noreferrer" href="https://underpig1.github.io/octos-community/src/fractal/index.html">→</a>
+                        <p class="card-description reveal-text">64-bit-precision multi-threaded Mandelbrot fractal
+                            explorer written in C++, ported to the web with WebAssembly.</p>
+                    </div><a class="card-link" target="_blank" rel="noopener noreferrer"
+                        href="https://underpig1.github.io/octos-community/src/fractal/index.html">→</a>
                 </div>
                 <div class="card project-card">
                     <div class="card-border"></div>
@@ -954,8 +980,11 @@
                         <p class="card-loc">Fighting climate change from home</p>
                     </div>
                     <div class="card-bottom">
-                        <p class="card-description reveal-text">A mobile app to incentivize users to fight climate change from home. Recognized by U.S. Congress with a certificate of Special Congressional Recognition.</p>
-                    </div><a class="card-link" target="_blank" rel="noopener noreferrer" href="https://github.com/underpig1/gbhi">→</a>
+                        <p class="card-description reveal-text">A mobile app to incentivize users to fight climate
+                            change from home. Recognized by U.S. Congress with a certificate of Special Congressional
+                            Recognition.</p>
+                    </div><a class="card-link" target="_blank" rel="noopener noreferrer"
+                        href="https://github.com/underpig1/gbhi">→</a>
                 </div>
                 <div class="card project-card">
                     <div class="card-border"></div>
@@ -966,8 +995,10 @@
                         <p class="card-loc">Machine learning suite for genomics</p>
                     </div>
                     <div class="card-bottom">
-                        <p class="card-description reveal-text">A neural network framework for genotype-to-phenotype prediction. Created as a John and Violet Kay Research Fellow.</p>
-                    </div><a class="card-link" target="_blank" rel="noopener noreferrer" href="https://github.com/cpg2401/genominator">→</a>
+                        <p class="card-description reveal-text">A neural network framework for genotype-to-phenotype
+                            prediction. Created as a John and Violet Kay Research Fellow.</p>
+                    </div><a class="card-link" target="_blank" rel="noopener noreferrer"
+                        href="https://github.com/cpg2401/genominator">→</a>
                 </div>
                 <div class="card project-card">
                     <div class="card-border"></div>
@@ -978,8 +1009,10 @@
                         <p class="card-loc">Online 2D physics sandbox</p>
                     </div>
                     <div class="card-bottom">
-                        <p class="card-description reveal-text">A playground for building automatic contraptions with joints, motors, and heaps of physics.</p>
-                    </div><a class="card-link" target="_blank" rel="noopener noreferrer" href="https://underpig1.github.io/octos-community/src/contraption/">→</a>
+                        <p class="card-description reveal-text">A playground for building automatic contraptions with
+                            joints, motors, and heaps of physics.</p>
+                    </div><a class="card-link" target="_blank" rel="noopener noreferrer"
+                        href="https://underpig1.github.io/octos-community/src/contraption/">→</a>
                 </div>
                 <div class="card project-card">
                     <div class="card-border"></div>
@@ -990,8 +1023,10 @@
                         <p class="card-loc">Solar simulations at radio frequencies</p>
                     </div>
                     <div class="card-bottom">
-                        <p class="card-description reveal-text">A Python library to simulate particle interactions and radiation mechanisms in the solar corona. Created for the National Solar Observatory.</p>
-                    </div><a class="card-link" target="_blank" rel="noopener noreferrer" href="https://github.com/underpig1/pysolrad">→</a>
+                        <p class="card-description reveal-text">A Python library to simulate particle interactions and
+                            radiation mechanisms in the solar corona. Created for the National Solar Observatory.</p>
+                    </div><a class="card-link" target="_blank" rel="noopener noreferrer"
+                        href="https://github.com/underpig1/pysolrad">→</a>
                 </div>
                 <div class="card project-card">
                     <div class="card-border"></div>
@@ -1002,8 +1037,10 @@
                         <p class="card-loc">Reconstructing images from fMRI brain scans</p>
                     </div>
                     <div class="card-bottom">
-                        <p class="card-description reveal-text">Latent diffusion model pipeline for reconstructing visual input from fMRI brain scans. Created as part of Neurotech@Berkeley.</p>
-                    </div><a class="card-link" target="_blank" rel="noopener noreferrer" href="https://github.com/underpig1/ntab-fmri-reconstruction">→</a>
+                        <p class="card-description reveal-text">Latent diffusion model pipeline for reconstructing
+                            visual input from fMRI brain scans. Created as part of Neurotech@Berkeley.</p>
+                    </div><a class="card-link" target="_blank" rel="noopener noreferrer"
+                        href="https://github.com/underpig1/ntab-fmri-reconstruction">→</a>
                 </div>
             </div>
         </div>
@@ -1022,128 +1059,135 @@
         </div>
     </div>
     <script>
-    function initTextReveal(container) {
-        let updating = false;
+        function initTextReveal(container) {
+            let updating = false;
 
-        function unwrapLines() {
-            container.querySelectorAll('.reveal-line').forEach(line => {
-                line.replaceWith(...line.childNodes);
-            });
-        }
-
-        function getTextNodes(root) {
-            const walker = document.createTreeWalker(
-                root,
-                NodeFilter.SHOW_TEXT
-            );
-
-            const nodes = [];
-            let node;
-
-            while ((node = walker.nextNode())) {
-                nodes.push(node);
+            function unwrapLines() {
+                container.querySelectorAll('.reveal-line').forEach(line => {
+                    line.replaceWith(...line.childNodes);
+                });
             }
 
-            return nodes;
-        }
+            function getTextNodes(root) {
+                const walker = document.createTreeWalker(
+                    root,
+                    NodeFilter.SHOW_TEXT
+                );
 
-        function getLines(nodes) {
-            const lines = [];
-            let current;
+                const nodes = [];
+                let node;
 
-            for (const node of nodes) {
-                for (let i = 0; i < node.length; i++) {
-                    const range = document.createRange();
+                while ((node = walker.nextNode())) {
+                    nodes.push(node);
+                }
 
-                    range.setStart(node, i);
-                    range.setEnd(node, i + 1);
+                return nodes;
+            }
 
-                    const rect = range.getBoundingClientRect();
+            function getLines(nodes) {
+                const lines = [];
+                let current;
 
-                    if (!rect.width && !rect.height) continue;
+                for (const node of nodes) {
+                    for (let i = 0; i < node.length; i++) {
+                        const range = document.createRange();
 
-                    const top = Math.round(rect.top);
+                        range.setStart(node, i);
+                        range.setEnd(node, i + 1);
 
-                    if (!current || Math.abs(current.top - top) > 1) {
-                        current = {
-                            top,
-                            startNode: node,
-                            startOffset: i,
-                            endNode: node,
-                            endOffset: i + 1
-                        };
+                        const rect = range.getBoundingClientRect();
 
-                        lines.push(current);
-                    } else {
-                        current.endNode = node;
-                        current.endOffset = i + 1;
+                        if (!rect.width && !rect.height) continue;
+
+                        const top = Math.round(rect.top);
+
+                        if (!current || Math.abs(current.top - top) > 1) {
+                            current = {
+                                top,
+                                startNode: node,
+                                startOffset: i,
+                                endNode: node,
+                                endOffset: i + 1
+                            };
+
+                            lines.push(current);
+                        } else {
+                            current.endNode = node;
+                            current.endOffset = i + 1;
+                        }
                     }
                 }
+
+                return lines;
             }
 
-            return lines;
-        }
+            function cleanup(root) {
+                [...root.querySelectorAll('*')]
+                    .reverse()
+                    .forEach(element => {
+                        if (element === container) return;
 
-        function cleanup(root) {
-            [...root.querySelectorAll('*')]
-                .reverse()
-                .forEach(element => {
-                    if (element === container) return;
-
-                    if (!element.textContent.trim()) {
-                        element.replaceWith(...element.childNodes);
-                    }
-                });
-        }
-
-        function update() {
-            if (updating) return;
-
-            updating = true;
-            container.style.visibility = 'hidden';
-
-            unwrapLines();
-            void container.offsetHeight;
-
-            const lines = getLines(getTextNodes(container));
-
-            for (let i = lines.length - 1; i >= 0; i--) {
-                const line = lines[i];
-
-                const range = document.createRange();
-
-                range.setStart(line.startNode, line.startOffset);
-                range.setEnd(line.endNode, line.endOffset);
-
-                const wrapper = document.createElement('span');
-
-                wrapper.className = 'reveal-line';
-                wrapper.style.transitionDelay = `${i * 0.05}s`;
-
-                wrapper.appendChild(range.extractContents());
-                range.insertNode(wrapper);
+                        if (!element.textContent.trim()) {
+                            element.replaceWith(...element.childNodes);
+                        }
+                    });
             }
 
-            cleanup(container);
+            function update() {
+                if (updating) return;
 
-            container.style.visibility = '';
-            updating = false;
+                updating = true;
+                container.style.visibility = 'hidden';
+
+                unwrapLines();
+                void container.offsetHeight;
+
+                const lines = getLines(getTextNodes(container));
+
+                for (let i = lines.length - 1; i >= 0; i--) {
+                    const line = lines[i];
+
+                    const range = document.createRange();
+
+                    range.setStart(line.startNode, line.startOffset);
+                    range.setEnd(line.endNode, line.endOffset);
+
+                    const wrapper = document.createElement('span');
+
+                    wrapper.className = 'reveal-line';
+                    wrapper.style.transitionDelay = `${i * 0.05}s`;
+
+                    wrapper.appendChild(range.extractContents());
+                    range.insertNode(wrapper);
+                }
+
+                cleanup(container);
+
+                container.style.visibility = '';
+                updating = false;
+            }
+
+            const observer = new ResizeObserver(update);
+
+            observer.observe(container);
+            update();
+
+            return () => {
+                observer.disconnect();
+                unwrapLines();
+                cleanup(container);
+            };
         }
-
-        const observer = new ResizeObserver(update);
-
-        observer.observe(container);
-        update();
-
-        return () => {
-            observer.disconnect();
-            unwrapLines();
-            cleanup(container);
-        };
-    }
-            document.addEventListener('DOMContentLoaded', () => {
-            const canvas = document.getElementById('canvas')
-            const ctx = canvas.getContext('2d');
+        document.addEventListener('DOMContentLoaded', () => {
+            const canvases = {
+                hero: document.getElementById('canvas-hero'),
+                research: document.getElementById('canvas-research'),
+                about: document.getElementById('canvas-about')
+            };
+            const ctxs = {};
+            for (const key in canvases) ctxs[key] = canvases[key].getContext('2d');
+            let ctx, curW = 0, curH = 0;
+            let cursorOffsetX = 0, cursorOffsetY = 0;
             let width = window.innerWidth;
             let height = window.innerHeight;
             const vec = (x, y, z = 0) => { return { x, y, z } }
@@ -1200,17 +1244,20 @@
                 initTextReveal(el);
             })
 
+            const cardCanvasMap = { lanl: 'research', lbnl: 'research', nso: 'research', about: 'about', octos: 'hero' };
+
             window.onresize = () => {
-                const rect = canvas.getBoundingClientRect();
                 const dpr = window.devicePixelRatio || 1;
 
-                width = rect.width;
-                height = rect.height;
+                for (const key in canvases) {
+                    const cRect = canvases[key].getBoundingClientRect();
+                    canvases[key].width = Math.round(cRect.width * dpr);
+                    canvases[key].height = Math.round(cRect.height * dpr);
+                    ctxs[key].setTransform(dpr, 0, 0, dpr, 0, 0);
+                }
 
-                canvas.width = Math.round(width * dpr);
-                canvas.height = Math.round(height * dpr);
-
-                ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                width = window.innerWidth;
+                height = window.innerHeight;
 
                 stageR = Math.min(width, height) / 2.2 // was 2
                 if (width < 500) {
@@ -1218,20 +1265,16 @@
                 }
                 stageSize = Math.min(width, height) / 100
 
-                const scrollX = window.scrollX || document.documentElement.scrollLeft;
-                const scrollY = window.scrollY || document.documentElement.scrollTop;
-                // y' = (y + scrollTop) * f / (z + stageZ)
-                // y'*stageZ/f-scrollTop
-                const getCenter = (rect) => vec(-rect.left + width / 2 - rect.width / 2, height / 2 - rect.top - rect.height / 2 - scrollY)
+                const getCenter = (rect, canvasRect) => vec(
+                    (canvasRect.left + canvasRect.width / 2) - (rect.left + rect.width / 2),
+                    (canvasRect.top + canvasRect.height / 2) - (rect.top + rect.height / 2)
+                )
                 for (let name of cardNames) {
-                    let c = getCenter(document.getElementById('card-' + name).getBoundingClientRect())
+                    const canvasRect = canvases[cardCanvasMap[name]].getBoundingClientRect();
+                    let c = getCenter(document.getElementById('card-' + name).getBoundingClientRect(), canvasRect)
                     cardPos[name] = c;
                 }
 
-                // for (let e of document.getElementsByClassName('scroll-container')) {
-                //     console.log(e)
-                //     e.style.setProperty("--pos", e.getBoundingClientRect().top + scrollY + 'px')
-                // }
                 resetOrbit();
             }
             window.onresize()
@@ -1328,10 +1371,10 @@
 
             function project(x, y, z, force = false) {
                 x = x * f / (z + stageZ)
-                y = (y + scrollTop) * f / (z + stageZ)
+                y = y * f / (z + stageZ)
 
                 if (force && cursorActive) {
-                    let dhat = vec(x - cursorPos.x, y - cursorPos.y, z - 0)
+                    let dhat = vec(x - (cursorPos.x - cursorOffsetX), y - (cursorPos.y - cursorOffsetY), z - 0)
                     let d = 0 - (Math.hypot(dhat.x, dhat.y, dhat.z) / 50) ** 2
                     if (d > -1) d = -1
                     x += dhat.x / d
@@ -1346,7 +1389,7 @@
                 var { x, y } = project(x, y, z, force)
                 scale = z / stageR / 2 + 0.5
 
-                d = { x: width / 2 + x, y: height / 2 + y, a: scale, r: scale * stageSize }
+                d = { x: curW / 2 + x, y: curH / 2 + y, a: scale, r: scale * stageSize }
                 dots.push(d)
                 ctx.lineTo(d.x, d.y)
                 // ctx.stroke()
@@ -1388,7 +1431,7 @@
                         let fieldR = boundR * r * Math.sin(theta) ** 2
                         var { x, y, z } = sphToCart(fieldR, theta, phi + phiOff)
                         var { x, y } = project(x, y + shiftY, z)
-                        if (x && y) ctx.lineTo(width / 2 + x, height / 2 + y)
+                        if (x && y) ctx.lineTo(curW / 2 + x, curH / 2 + y)
                         else {
                             ctx.stroke();
                             ctx.beginPath()
@@ -1398,12 +1441,25 @@
                 }
             }
 
+            function setActiveCanvas(key) {
+                ctx = ctxs[key];
+                const rect = canvases[key].getBoundingClientRect();
+                curW = rect.width;
+                curH = rect.height;
+                cursorOffsetX = (rect.left + rect.width / 2) - width / 2;
+                cursorOffsetY = (rect.top + rect.height / 2) - height / 2;
+            }
+
+            function clearCanvas(key) {
+                const c = canvases[key];
+                ctxs[key].clearRect(0, 0, c.width, c.height)
+            }
+
             function draw(t) {
-                ctx.clearRect(0, 0, width, height)
-                if (isVisible['hero']) drawHero(t)
-                if (isVisible['research']) drawResearch(t)
-                if (isVisible['about']) drawAbout(t)
-                drawProjects(t)
+                for (const key in canvases) clearCanvas(key);
+                if (isVisible['hero']) { setActiveCanvas('hero'); drawHero(t) }
+                if (isVisible['research']) { setActiveCanvas('research'); drawResearch(t) }
+                if (isVisible['about']) { setActiveCanvas('about'); drawAbout(t) }
             }
 
             // const z0 = 0.25387857578;
@@ -1498,10 +1554,10 @@
                             var { x, y } = project(hr[0] / scale + aboutPos.x, hr[1] / scale + aboutPos.y, hr[2] / scale, true);
 
                             // if (i % 50 == 10) dot(hr[0] / scale + aboutPos.x, hr[1] / scale + aboutPos.y, hr[2] / scale, true);
-                            if (prev.x != 0 && prev.y != 0) ctx.moveTo(prev.x + width / 2, prev.y + height / 2);
+                            if (prev.x != 0 && prev.y != 0) ctx.moveTo(prev.x + curW / 2, prev.y + curH / 2);
 
                             prev = vec(x, y);
-                            ctx.lineTo(x + width / 2, y + height / 2);
+                            ctx.lineTo(x + curW / 2, y + curH / 2);
                             ctx.stroke();
                         }
                     }
@@ -1513,14 +1569,14 @@
                 let lbnlPos = cardPos['lbnl']
                 allDots = []
                 let shift = t / 10000 + followMouse.x / stageR / 50;
-                const scaleFac = stageR/300
+                const scaleFac = stageR / 300
                 for (let x = -100; x <= 100; x += 20) {
                     dots = []
                     for (let t = 0; t <= 2 * Math.PI; t += Math.PI / 5) {
-                        let r = (x / 9) ** 2* scaleFac
+                        let r = (x / 9) ** 2 * scaleFac
                         let dy = r * Math.cos(t + shift)
                         let dz = r * Math.sin(t + shift)
-                        dot(lbnlPos.x + x* scaleFac, dy + lbnlPos.y, dz)
+                        dot(lbnlPos.x + x * scaleFac, dy + lbnlPos.y, dz)
                     }
                     allDots.push(dots)
                 }
@@ -1575,16 +1631,16 @@
                         ctx.beginPath();
                         for (let theta = 0; theta <= Math.PI; theta += Math.PI / 20) {
                             let fieldR = boundR * Math.sin(theta)
-                            var { x, y, z } = sphToCart(fieldR* scaleFac, theta, shift + phiOff)
+                            var { x, y, z } = sphToCart(fieldR * scaleFac, theta, shift + phiOff)
                             // toDraw.push({x, y, z})
                             var { x, y } = project(x + nsoPos.x, y + nsoPos.y, z, true)
-                            ctx.lineTo(x + width / 2, y + height / 2)
+                            ctx.lineTo(x + curW / 2, y + curH / 2)
                         }
                         ctx.stroke();
 
                         let theta = shift + phiOff
                         let fieldR = boundR * Math.sin(theta)
-                        var { x, y, z } = sphToCart(fieldR* scaleFac, theta, shift + phiOff)
+                        var { x, y, z } = sphToCart(fieldR * scaleFac, theta, shift + phiOff)
                         dot(x + nsoPos.x, y + nsoPos.y, z);
                     }
                 }
@@ -1618,30 +1674,30 @@
                     for (let z = 25; z >= 15; z -= 10) {
                         ctx.beginPath();
                         for (let theta = 0; theta <= 2 * Math.PI; theta += Math.PI / 50) {
-                            let r = sellipse(theta)*scaleFac
+                            let r = sellipse(theta) * scaleFac
                             var { x, y, _ } = sphToCart(r, theta, phi)
                             var { x, y } = project(x + lanlPos.x, y + lanlPos.y, z, true)
-                            ctx.lineTo(x + width / 2, y + height / 2)
+                            ctx.lineTo(x + curW / 2, y + curH / 2)
                         }
                         ctx.stroke();
                     }
                     let ds = 5
                     for (let i = 0; i < ds; i++) {
                         let theta = shift + i * Math.PI * 2 / ds + (boundR - 50) / 5
-                        let r = sellipse(theta)*scaleFac
+                        let r = sellipse(theta) * scaleFac
                         var { x, y, z } = sphToCart(r, theta, phi)
                         dot(x + lanlPos.x, y + lanlPos.y, z + 25);
                     }
                 }
                 for (var startX = -60; startX <= 60; startX += 20) {
                     ctx.beginPath();
-                    var { x, y } = project(startX* scaleFac + lanlPos.x, -maxR*scaleFac + lanlPos.y, 25, true)
-                    ctx.moveTo(x + width / 2, y + height / 2)
-                    let shiftY = 25 * (Math.sin(startX* scaleFac + shift) + 2)* scaleFac
-                    var { x, y } = project(startX* scaleFac + lanlPos.x, -maxR*scaleFac + lanlPos.y - shiftY, 25, true)
-                    ctx.lineTo(x + width / 2, y + height / 2)
+                    var { x, y } = project(startX * scaleFac + lanlPos.x, -maxR * scaleFac + lanlPos.y, 25, true)
+                    ctx.moveTo(x + curW / 2, y + curH / 2)
+                    let shiftY = 25 * (Math.sin(startX * scaleFac + shift) + 2) * scaleFac
+                    var { x, y } = project(startX * scaleFac + lanlPos.x, -maxR * scaleFac + lanlPos.y - shiftY, 25, true)
+                    ctx.lineTo(x + curW / 2, y + curH / 2)
                     ctx.stroke();
-                    dot(startX* scaleFac + lanlPos.x, -maxR*scaleFac + lanlPos.y - shiftY, 25)
+                    dot(startX * scaleFac + lanlPos.x, -maxR * scaleFac + lanlPos.y - shiftY, 25)
                 }
             }
 
